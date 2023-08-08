@@ -4,18 +4,19 @@ from data.data import Person
 from faker import Faker
 
 faker_ru = Faker('ru_RU')
-Faker.seed()
+faker_en = Faker('en_US')
 
+Faker.seed()
 
 def generated_person():
     yield Person(
-        full_name=faker_ru.first_name() + " " + faker_ru.last_name(),
-        first_name=faker_ru.first_name(),
-        last_name=faker_ru.last_name(),
-        email=faker_ru.email(),
+        full_name=faker_en.first_name() + " " + faker_en.last_name(),
+        first_name=faker_en.first_name(),
+        last_name=faker_en.last_name(),
+        email=faker_en.email(),
         age=random.randint(10, 80),
         salary=random.randint(10000,100000),
-        department=faker_ru.job(),
-        current_address=faker_ru.address(),
-        permanent_address=faker_ru.address(),
+        department=faker_en.job()[:25],
+        current_address=faker_en.address().replace('\n', ' '),
+        permanent_address=faker_en.address().replace('\n', ' '),
     )

@@ -5,11 +5,16 @@ from pages.base_page import BasePage
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from generator.generator import generated_person
+from URLs.urls import AllURLs
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators, \
     WebTablePageLocators, ButtonsPageLocators, LinksPageLocators
 
 
 class TextBoxPage(BasePage):
+    def __init__(self, driver):
+        super().__init__(driver, url=AllURLs.TextBoxPage_URL)
+        self.open()
+
     locators = TextBoxPageLocators()
 
     def fill_all_fields(self):
@@ -29,12 +34,17 @@ class TextBoxPage(BasePage):
     def check_filled_form(self):
         full_name = self.element_is_present(self.locators.CREATED_FULL_NAME).text.split(':')[1]
         email = self.element_is_present(self.locators.CREATED_EMAIL).text.split(':')[1]
-        current_address = self.element_is_present(self.locators.CREATED_CURRENT_ADDRESS).text.split(':')[1]
+        current_address = \
+            self.element_is_present(self.locators.CREATED_CURRENT_ADDRESS).text.split(':')[1]
         permanent_address = self.element_is_present(self.locators.CREATED_PERMANENT_ADDRESS).text.split(':')[1]
         return full_name, email, current_address, permanent_address
 
 
 class CheckBoxPage(BasePage):
+    def __init__(self, driver):
+        super().__init__(driver, url=AllURLs.CheckBoxPage_URL)
+        self.open()
+
     locators = CheckBoxPageLocators()
 
     def open_full_list(self):
@@ -69,6 +79,10 @@ class CheckBoxPage(BasePage):
 
 
 class RadioButtonPage(BasePage):
+
+    def __init__(self, driver):
+        super().__init__(driver, url=AllURLs.RadioButtonPage_URL)
+        self.open()
     locators = RadioButtonPageLocators()
 
     def click_on_the_radio_button(self, choice):
@@ -83,6 +97,10 @@ class RadioButtonPage(BasePage):
 
 
 class WebTablePage(BasePage):
+
+    def __init__(self, driver):
+        super().__init__(driver, url=AllURLs.WebTablePage_URL)
+        self.open()
     locators = WebTablePageLocators()
 
     def add_new_person(self):
@@ -96,11 +114,17 @@ class WebTablePage(BasePage):
             salary = person_info.salary
             department = person_info.department
             self.element_is_clickable(self.locators.ADD_BUTTON).click()
+            self.element_is_visible(self.locators.FIRST_NAME_INPUT).send_keys(Keys.HOME)
             self.element_is_visible(self.locators.FIRST_NAME_INPUT).send_keys(first_name)
+            self.element_is_visible(self.locators.LAST_NAME_INPUT).send_keys(Keys.HOME)
             self.element_is_visible(self.locators.LAST_NAME_INPUT).send_keys(last_name)
+            self.element_is_visible(self.locators.EMAIL_INPUT).send_keys(Keys.HOME)
             self.element_is_visible(self.locators.EMAIL_INPUT).send_keys(email)
+            self.element_is_visible(self.locators.AGE_INPUT).send_keys(Keys.HOME)
             self.element_is_visible(self.locators.AGE_INPUT).send_keys(age)
+            self.element_is_visible(self.locators.SALARY_INPUT).send_keys(Keys.HOME)
             self.element_is_visible(self.locators.SALARY_INPUT).send_keys(salary)
+            self.element_is_visible(self.locators.DEPARTMENT_INPUT).send_keys(Keys.HOME)
             self.element_is_visible(self.locators.DEPARTMENT_INPUT).send_keys(department)
             self.element_is_visible(self.locators.SUBMIT_BUTTON).click()
             count -= 1
@@ -156,6 +180,10 @@ class WebTablePage(BasePage):
 
 
 class ButtonsPage(BasePage):
+
+    def __init__(self, driver):
+        super().__init__(driver, url=AllURLs.ButtonsPage_URL)
+        self.open()
     locators = ButtonsPageLocators()
 
     def double_click_button(self):
@@ -179,6 +207,9 @@ class ButtonsPage(BasePage):
 
 
 class LinksPage(BasePage):
+    def __init__(self, driver):
+        super().__init__(driver, url=AllURLs.LinksPage_URL)
+        self.open()
     locators = LinksPageLocators()
 
     def try_follow_the_link(self, locator):
@@ -194,29 +225,29 @@ class LinksPage(BasePage):
             current_url = self.driver.current_url
             return link_href, current_url, request.status_code
 
-    def check_home_simple_link(self):
-        return self.try_follow_the_link(self.locators.HOME_LINK)
-
-    def check_home_dynamic_link(self):
-        return self.try_follow_the_link(self.locators.HOME_DYNAMIC_LINK)
-
-    def check_created_link(self):
-        return self.try_follow_the_link(self.locators.CREATED_LINK)
-
-    def check_no_content_link(self):
-        return self.try_follow_the_link(self.locators.NO_CONTENT_LINK)
-
-    def check_moved_link(self):
-        return self.try_follow_the_link(self.locators.MOVED_LINK)
-
-    def check_bad_request_link(self):
-        return self.try_follow_the_link(self.locators.BAD_REQUEST)
-
-    def check_unauthorized_link(self):
-        return self.try_follow_the_link(self.locators.UNAUTHORIZED_LINK)
-
-    def check_forbidden_link(self):
-        return self.try_follow_the_link(self.locators.FORBIDDEN_LINK)
-
-    def check_not_found_link(self):
-        return self.try_follow_the_link(self.locators.NOT_FOUND_LINK)
+    # def check_home_simple_link(self):
+    #     return self.try_follow_the_link(self.locators.HOME_LINK)
+    #
+    # def check_home_dynamic_link(self):
+    #     return self.try_follow_the_link(self.locators.HOME_DYNAMIC_LINK)
+    #
+    # def check_created_link(self):
+    #     return self.try_follow_the_link(self.locators.CREATED_LINK)
+    #
+    # def check_no_content_link(self):
+    #     return self.try_follow_the_link(self.locators.NO_CONTENT_LINK)
+    #
+    # def check_moved_link(self):
+    #     return self.try_follow_the_link(self.locators.MOVED_LINK)
+    #
+    # def check_bad_request_link(self):
+    #     return self.try_follow_the_link(self.locators.BAD_REQUEST)
+    #
+    # def check_unauthorized_link(self):
+    #     return self.try_follow_the_link(self.locators.UNAUTHORIZED_LINK)
+    #
+    # def check_forbidden_link(self):
+    #     return self.try_follow_the_link(self.locators.FORBIDDEN_LINK)
+    #
+    # def check_not_found_link(self):
+    #     return self.try_follow_the_link(self.locators.NOT_FOUND_LINK)

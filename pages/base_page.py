@@ -2,6 +2,7 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 
+
 class BasePage:
     def __init__(self, driver, url):
         self.driver = driver
@@ -52,5 +53,3 @@ class BasePage:
 
     def switch_to_first_tab(self):
         self.driver.switch_to.window(self.driver.window_handles[0])
-
-
