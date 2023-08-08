@@ -1,13 +1,14 @@
+import os
 import time
 import random
 import requests
 from pages.base_page import BasePage
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from generator.generator import generated_person
+from generator.generator import generated_person, generated_file
 from URLs.urls import AllURLs
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators, \
-    WebTablePageLocators, ButtonsPageLocators, LinksPageLocators
+    WebTablePageLocators, ButtonsPageLocators, LinksPageLocators, UploadAndDownloadPageLocators
 
 
 class TextBoxPage(BasePage):
@@ -83,6 +84,7 @@ class RadioButtonPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver, url=AllURLs.RadioButtonPage_URL)
         self.open()
+
     locators = RadioButtonPageLocators()
 
     def click_on_the_radio_button(self, choice):
@@ -101,6 +103,7 @@ class WebTablePage(BasePage):
     def __init__(self, driver):
         super().__init__(driver, url=AllURLs.WebTablePage_URL)
         self.open()
+
     locators = WebTablePageLocators()
 
     def add_new_person(self):
@@ -184,6 +187,7 @@ class ButtonsPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver, url=AllURLs.ButtonsPage_URL)
         self.open()
+
     locators = ButtonsPageLocators()
 
     def double_click_button(self):
@@ -210,6 +214,7 @@ class LinksPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver, url=AllURLs.LinksPage_URL)
         self.open()
+
     locators = LinksPageLocators()
 
     def try_follow_the_link(self, locator):
@@ -225,29 +230,22 @@ class LinksPage(BasePage):
             current_url = self.driver.current_url
             return link_href, current_url, request.status_code
 
-    # def check_home_simple_link(self):
-    #     return self.try_follow_the_link(self.locators.HOME_LINK)
-    #
-    # def check_home_dynamic_link(self):
-    #     return self.try_follow_the_link(self.locators.HOME_DYNAMIC_LINK)
-    #
-    # def check_created_link(self):
-    #     return self.try_follow_the_link(self.locators.CREATED_LINK)
-    #
-    # def check_no_content_link(self):
-    #     return self.try_follow_the_link(self.locators.NO_CONTENT_LINK)
-    #
-    # def check_moved_link(self):
-    #     return self.try_follow_the_link(self.locators.MOVED_LINK)
-    #
-    # def check_bad_request_link(self):
-    #     return self.try_follow_the_link(self.locators.BAD_REQUEST)
-    #
-    # def check_unauthorized_link(self):
-    #     return self.try_follow_the_link(self.locators.UNAUTHORIZED_LINK)
-    #
-    # def check_forbidden_link(self):
-    #     return self.try_follow_the_link(self.locators.FORBIDDEN_LINK)
-    #
-    # def check_not_found_link(self):
-    #     return self.try_follow_the_link(self.locators.NOT_FOUND_LINK)
+
+class UploadAndDownloadPage(BasePage):
+
+    def __init__(self, driver):
+        super().__init__(driver, url=AllURLs.UploadAndDownload_URL)
+        self.open()
+
+    locators = UploadAndDownloadPageLocators
+
+    def upload_file(self):
+        file_name, path = generated_file()
+        self.element_is_present(self.locators.UPLOAD_FILE).send_keys(path)
+        os.remove(path)
+        text = self.element_is_present(self.locators.UPLOADED_FILE).text
+        return file_name.split('/')[-1], text.split('\\')[-1]
+
+
+    def download_file(self):
+        pass

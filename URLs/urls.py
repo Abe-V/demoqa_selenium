@@ -5,3 +5,4 @@ class AllURLs:
     WebTablePage_URL = 'https://demoqa.com/webtables'
     ButtonsPage_URL = 'https://demoqa.com/buttons'
     LinksPage_URL = 'https://demoqa.com/links'
+    UploadAndDownload_URL ='https://demoqa.com/upload-download'

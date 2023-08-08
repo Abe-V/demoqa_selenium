@@ -3,7 +3,8 @@ import pytest
 import random
 from locators.elements_page_locators import LinksPageLocators
 
-from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage, LinksPage
+from pages.elements_page import TextBoxPage, CheckBoxPage, RadioButtonPage, WebTablePage, ButtonsPage, LinksPage, \
+    UploadAndDownloadPage
 
 
 class TestElements:
@@ -134,3 +135,12 @@ class TestElements:
                     pytest.xfail(f"No valid href link is provided yet")
                 else:
                     raise e
+
+    class TestUploadAndDownload:
+
+        def test_upload_file(self, driver):
+            upload_download_page = UploadAndDownloadPage(driver)
+            file_name, result = upload_download_page.upload_file()
+            assert file_name == result
+        def test_download_file(self, driver):
+            upload_download_page = UploadAndDownloadPage(driver)
