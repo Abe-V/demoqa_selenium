@@ -141,6 +141,9 @@ class TestElements:
         def test_upload_file(self, driver):
             upload_download_page = UploadAndDownloadPage(driver)
             file_name, result = upload_download_page.upload_file()
-            assert file_name == result
+            assert file_name == result, 'The file has not been uploaded'
+
         def test_download_file(self, driver):
             upload_download_page = UploadAndDownloadPage(driver)
+            check = upload_download_page.download_file()
+            assert check is True, 'The file has not been downloaded'

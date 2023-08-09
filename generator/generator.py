@@ -24,9 +24,7 @@ def generated_person():
 
 
 def generated_file():
-    random_number = random.randint(0, 999)
-    file_name = f'filetest{random_number}.txt'
-    path = f'/Users/abeazovsky/Desktop/automation_qa_course/{file_name}'
+    path = f'/Users/abeazovsky/Desktop/automation_qa_course/filetest{random.randint(0, 999)}'
     file = open(path, 'w+')
     file.write(f'Hello World{random.randint(0,999)}')
     file.close()
