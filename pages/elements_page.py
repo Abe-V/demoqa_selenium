@@ -3,13 +3,19 @@ import os
 import time
 import random
 import requests
+from requests.exceptions import InvalidSchema
+from selenium.common import TimeoutException
 from pages.base_page import BasePage
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from generator.generator import generated_person, generated_file
 from URLs.urls import AllURLs
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators, \
-    WebTablePageLocators, ButtonsPageLocators, LinksPageLocators, UploadAndDownloadPageLocators
+    WebTablePageLocators, ButtonsPageLocators, LinksPageLocators, UploadAndDownloadPageLocators, \
+    DynamicPropertiesPageLocators
+
+# for each class respective URL will be assigned as a url argument for BasePage,
+# and page with respective URL will be opened
 
 
 class TextBoxPage(BasePage):
@@ -88,12 +94,10 @@ class RadioButtonPage(BasePage):
 
     locators = RadioButtonPageLocators()
 
-    def click_on_the_radio_button(self, choice):
-        choices = {'yes': self.locators.YES_RADOIBUTTON,
-                   'impressive': self.locators.IMPRESSIVE_RADOIBUTTON,
-                   'no': self.locators.NO_RADOIBUTTON}
-
-        radio = self.element_is_visible(choices[choice]).click()
+    def click_on_the_radio_button(self, locator):
+        button = self.element_is_visible(locator)
+        button.click()
+        return button.text
 
     def get_output_result(self):
         return self.element_is_present(self.locators.OUTPUT_RESULT).text
@@ -205,13 +209,11 @@ class ButtonsPage(BasePage):
 
     def get_clicked_buttons(self):
         clicked_buttons = self.element_is_present(self.locators.ALL_CLICKED_BUTTONS_MESSAGE).text
-        # data = []
-        # for message in clicked_buttons:
-        #     data.append(message.text)
         return clicked_buttons
 
 
 class LinksPage(BasePage):
+
     def __init__(self, driver):
         super().__init__(driver, url=AllURLs.LinksPage_URL)
         self.open()
@@ -223,7 +225,7 @@ class LinksPage(BasePage):
         link_href = current_link.get_attribute('href')
         try:
             request = requests.get(link_href)
-        except:
+        except InvalidSchema:
             return link_href, "NOT VALID", "no_status_code"
         else:
             current_link.click()
@@ -241,20 +243,63 @@ class UploadAndDownloadPage(BasePage):
     locators = UploadAndDownloadPageLocators
 
     def upload_file(self):
+        # generating file on a local machine
         file_name, path = generated_file()
+        # send created file's path as a chosen file
         self.element_is_present(self.locators.UPLOAD_FILE).send_keys(path)
+        # delete file from a local machine
         os.remove(path)
+        # text = 'C:\fakepath\{real_file_name.ext}
         text = self.element_is_present(self.locators.UPLOADED_FILE).text
         return file_name.split('/')[-1], text.split('\\')[-1]
 
     def download_file(self):
-        link =  self.element_is_clickable(self.locators.DOWNLOAD_FILE).get_attribute('href')
+        # gets links for downloading file
+        link = self.element_is_clickable(self.locators.DOWNLOAD_FILE).get_attribute('href')
+        # decodes base64 code into a base16 code
         link_b = base64.b64decode(link)
-        path_name_file = f"/Users/abeazovsky/Desktop/automation_qa_course/filetest{random.randint(0,999)}.jpeg"
+        # create new JPEG file on a local machine
+        path_name_file = f"/Users/abeazovsky/Desktop/automation_qa_course/filetest{random.randint(0, 999)}.jpeg"
+        # open created file and insert base16 code
         with open(path_name_file, 'wb+') as f:
+            # '\xff\xd8' is a start of jpeg code (always)
             offset = link_b.find(b'\xff\xd8')
             f.write(link_b[offset:])
+            # check_file = True if file exists and False if it doesn't exist
             check_file = os.path.exists(path_name_file)
             f.close()
             os.remove(path_name_file)
         return check_file
+
+
+class DynamicPropertiesPage(BasePage):
+
+    def __init__(self, driver):
+        super().__init__(driver, url=AllURLs.DynamicProperties_URL)
+        self.open()
+
+    locators = DynamicPropertiesPageLocators
+
+    # Method gets text with dynamic ID
+    def get_text(self):
+        return self.element_is_present(self.locators.TEXT_WITH_RANDOM_ID).text
+
+    # returns True if "Will enable 5 seconds" is clickable and False if not clickable (wait = 1 sec)
+    def check_will_enable_5_seconds_button_clickability(self):
+        try:
+            self.element_is_clickable(self.locators.WILL_ENABLE_5_SECONDS_BUTTON, 0.1)
+        except TimeoutException:
+            return False
+        return True
+
+    # returns True if "Visible after 5 seconds" is clickable and False if not clickable (wait = 1 sec)
+    def check_visible_after_5_seconds_button(self):
+        try:
+            self.element_is_visible(self.locators.VISIBLE_AFTER_5_SECONDS_BUTTON, 0.1)
+        except TimeoutException:
+            return False
+        return True
+
+    # returns current color of 'Color change' button
+    def check_color_change_button_color(self):
+        return self.element_is_present(self.locators.COLOR_CHANGE_BUTTON, 1).value_of_css_property('color')

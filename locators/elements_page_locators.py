@@ -27,9 +27,14 @@ class CheckBoxPageLocators:
 
 
 class RadioButtonPageLocators:
-    YES_RADOIBUTTON = (By.CSS_SELECTOR, "label[for='yesRadio']")
-    IMPRESSIVE_RADOIBUTTON = (By.CSS_SELECTOR, "label[for='impressiveRadio']")
-    NO_RADOIBUTTON = (By.CSS_SELECTOR, "label[for='noRadio']")
+    YES_RADIOBUTTON = (By.CSS_SELECTOR, "label[for='yesRadio']")
+    IMPRESSIVE_RADIOBUTTON = (By.CSS_SELECTOR, "label[for='impressiveRadio']")
+    NO_RADIOBUTTON = (By.CSS_SELECTOR, "label[for='noRadio']")
+    # list of all button's locators
+    BUTTONS = [YES_RADIOBUTTON, IMPRESSIVE_RADIOBUTTON, NO_RADIOBUTTON]
+    # list of locators expected to fail
+    EXPECTED_TO_FAIL = [NO_RADIOBUTTON]
+    # displayed clicked button name
     OUTPUT_RESULT = (By.CSS_SELECTOR, "span[class='text-success']")
 
 
@@ -63,16 +68,20 @@ class WebTablePageLocators:
 
 
 class ButtonsPageLocators:
+    # Buttons
     DOUBLE_CLICK_BUTTON = (By.CSS_SELECTOR, "button[id='doubleClickBtn']")
     RIGHT_CLICK_BUTTON = (By.CSS_SELECTOR, "button[id='rightClickBtn']")
     DYNAMIC_CLICK_BUTTON = (By.XPATH, "//button[text()='Click Me']")
+    # Messages, appeared after respective button was clicked as per instruction
     DOUBLE_CLICK_MESSAGE = (By.CSS_SELECTOR, "p[id='doubleClickMessage']")
     RIGHT_CLICK_MESSAGE = (By.CSS_SELECTOR, "p[id='rightClickMessage']")
     DYNAMIC_CLICK_MESSAGE = (By.CSS_SELECTOR, "p[id='dynamicClickMessage']")
+    # List of all buttons clicked messages
     ALL_CLICKED_BUTTONS_MESSAGE = (By.CSS_SELECTOR, "p[id]")
 
 
 class LinksPageLocators:
+    # path to interactive links presented on a page
     HOME_LINK = (By.CSS_SELECTOR, "a[id='simpleLink']")
     HOME_DYNAMIC_LINK = (By.CSS_SELECTOR, "a[id='dynamicLink']")
     CREATED_LINK = (By.CSS_SELECTOR, "a[id='created']")
@@ -82,9 +91,33 @@ class LinksPageLocators:
     UNAUTHORIZED_LINK = (By.CSS_SELECTOR, "a[id='unauthorized']")
     FORBIDDEN_LINK = (By.CSS_SELECTOR, "a[id='forbidden']")
     NOT_FOUND_LINK = (By.CSS_SELECTOR, "a[id='invalid-url']")
+    # list of locators expected to fail due to invalid href link
+    EXPECTED_FAIL_LOCATORS = [
+                                CREATED_LINK,
+                                NO_CONTENT_LINK,
+                                MOVED_LINK,
+                                BAD_REQUEST,
+                                UNAUTHORIZED_LINK,
+                                FORBIDDEN_LINK,
+                                NOT_FOUND_LINK
+                             ]
 
 
 class UploadAndDownloadPageLocators:
+    # choose file button path
     UPLOAD_FILE = (By.CSS_SELECTOR, "input[id='uploadFile']")
+    # fake path appeared in browser - C:\fakepath\filename.ext
     UPLOADED_FILE = (By.CSS_SELECTOR, 'p[id="uploadedFilePath"]')
+    # download button path
     DOWNLOAD_FILE =(By.CSS_SELECTOR, 'a[id="downloadButton"]')
+
+
+class DynamicPropertiesPageLocators:
+    # simple text path
+    TEXT_WITH_RANDOM_ID = (By.CSS_SELECTOR, 'div[class="col-12 mt-4 col-md-6"]  div:nth-child(2) p')
+    # "Will enable 5 seconds" button
+    WILL_ENABLE_5_SECONDS_BUTTON = (By.CSS_SELECTOR, 'button[id="enableAfter"]')
+    # 'Color change' button
+    COLOR_CHANGE_BUTTON = (By.CSS_SELECTOR, 'button[id="colorChange"]')
+    # "Visible after 5 seconds" button
+    VISIBLE_AFTER_5_SECONDS_BUTTON = (By.CSS_SELECTOR, 'button[id="visibleAfter"]')
