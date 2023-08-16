@@ -1,6 +1,5 @@
 import base64
 import os
-import time
 import random
 import requests
 from requests.exceptions import InvalidSchema
@@ -14,7 +13,7 @@ from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLoc
     WebTablePageLocators, ButtonsPageLocators, LinksPageLocators, UploadAndDownloadPageLocators, \
     DynamicPropertiesPageLocators
 
-# for each class respective URL will be assigned as a url argument for BasePage,
+# for each class respective URL will be assigned as url argument for BasePage,
 # and page with respective URL will be opened
 
 
@@ -287,7 +286,7 @@ class DynamicPropertiesPage(BasePage):
     # returns True if "Will enable 5 seconds" is clickable and False if not clickable (wait = 1 sec)
     def check_will_enable_5_seconds_button_clickability(self):
         try:
-            self.element_is_clickable(self.locators.WILL_ENABLE_5_SECONDS_BUTTON, 0.1)
+            self.element_is_clickable(self.locators.WILL_ENABLE_5_SECONDS_BUTTON, 0)
         except TimeoutException:
             return False
         return True
@@ -295,7 +294,7 @@ class DynamicPropertiesPage(BasePage):
     # returns True if "Visible after 5 seconds" is clickable and False if not clickable (wait = 1 sec)
     def check_visible_after_5_seconds_button(self):
         try:
-            self.element_is_visible(self.locators.VISIBLE_AFTER_5_SECONDS_BUTTON, 0.1)
+            self.element_is_visible(self.locators.VISIBLE_AFTER_5_SECONDS_BUTTON, 0)
         except TimeoutException:
             return False
         return True

@@ -11,8 +11,7 @@ class TestElements:
     class TestTextBox:
 
         def test_text_box(self, driver):
-            text_box_page = TextBoxPage(driver)  # , 'https://demoqa.com/text-box')
-            # text_box_page.open()
+            text_box_page = TextBoxPage(driver)
             full_name, email, current_address, permanent_address = text_box_page.fill_all_fields()
             output_name, output_email, output_cur_addr, output_per_addr = text_box_page.check_filled_form()
             assert full_name == output_name, "the full name doesn't match"
@@ -23,7 +22,6 @@ class TestElements:
     class TestCheckBox:
         def test_check_box(self, driver):
             check_box_page = CheckBoxPage(driver)
-            # check_box_page.open()
             check_box_page.open_full_list()
             check_box_page.click_random_checkbox()
             input_checkbox = check_box_page.get_checked_checkboxes()
@@ -157,8 +155,8 @@ class TestDynamicPropertiesPage:
         time.sleep(5)
         #  checking if button is enabled
         after = dynamic_properties_page.check_will_enable_5_seconds_button_clickability()
-        assert not before and after, \
-            'button is not enabled yet or has been enabled too early'
+        assert not before, 'Button has been enabled too early'
+        assert after, 'Button is not enabled yet'
 
     def test_change_color_button(self, driver):
         dynamic_properties_page = DynamicPropertiesPage(driver)
@@ -167,7 +165,7 @@ class TestDynamicPropertiesPage:
         time.sleep(5)
         # checks current color, no waits
         color_after = dynamic_properties_page.check_color_change_button_color()
-        assert color_before != color_after, 'Color has not changed'
+        assert color_before != color_after, 'Color did not changed'
 
     def test_visible_after_5_seconds_button(self, driver):
         dynamic_properties_page = DynamicPropertiesPage(driver)
@@ -177,5 +175,5 @@ class TestDynamicPropertiesPage:
         time.sleep(5)
         # checking if button is enabled
         after = dynamic_properties_page.check_visible_after_5_seconds_button()
-        assert not before and after, \
-            'button is not enabled yet or has been enabled too early'
+        assert not before, 'Button has been enabled too early'
+        assert after, 'Button is not enabled yet'

@@ -17,7 +17,7 @@ def driver():
         driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
         driver.set_window_size(1470, 809)
     else:
-        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()))
         driver.maximize_window()
     yield driver
     print('\nquit browser...')
