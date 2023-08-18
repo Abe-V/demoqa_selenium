@@ -1,4 +1,5 @@
-from selenium.webdriver import ActionChains
+from selenium.webdriver import ActionChains, Keys
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -53,3 +54,9 @@ class BasePage:
 
     def switch_to_first_tab(self):
         self.driver.switch_to.window(self.driver.window_handles[0])
+
+    def set_page_zoom(self, value):
+        self.driver.execute_script(f"document.body.style.zoom = '{value}%'")
+
+    def check_current_zoom(self):
+        return int(float(self.driver.execute_script("return window.getComputedStyle(document.body, null).zoom"))*100)

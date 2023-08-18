@@ -12,8 +12,8 @@ Faker.seed()
 def generated_person():
     yield Person(
         full_name=faker_en.first_name() + " " + faker_en.last_name(),
-        first_name=faker_en.first_name(),
-        last_name=faker_en.last_name(),
+        first_name=faker_en.first_name()[:25],
+        last_name=faker_en.last_name()[:25],
         email=faker_en.email(),
         age=random.randint(10, 80),
         salary=random.randint(10000, 100000),

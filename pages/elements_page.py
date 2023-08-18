@@ -8,7 +8,7 @@ from pages.base_page import BasePage
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from generator.generator import generated_person, generated_file
-from URLs.urls import AllURLs
+from URLs.urls import ElementsPagesUrls
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators, \
     WebTablePageLocators, ButtonsPageLocators, LinksPageLocators, UploadAndDownloadPageLocators, \
     DynamicPropertiesPageLocators
@@ -19,7 +19,7 @@ from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLoc
 
 class TextBoxPage(BasePage):
     def __init__(self, driver):
-        super().__init__(driver, url=AllURLs.TextBoxPage_URL)
+        super().__init__(driver, url=ElementsPagesUrls.text_box_page_url)
         self.open()
 
     locators = TextBoxPageLocators()
@@ -49,7 +49,7 @@ class TextBoxPage(BasePage):
 
 class CheckBoxPage(BasePage):
     def __init__(self, driver):
-        super().__init__(driver, url=AllURLs.CheckBoxPage_URL)
+        super().__init__(driver, url=ElementsPagesUrls.check_box_page_url)
         self.open()
 
     locators = CheckBoxPageLocators()
@@ -88,7 +88,7 @@ class CheckBoxPage(BasePage):
 class RadioButtonPage(BasePage):
 
     def __init__(self, driver):
-        super().__init__(driver, url=AllURLs.RadioButtonPage_URL)
+        super().__init__(driver, url=ElementsPagesUrls.radio_button_page_url)
         self.open()
 
     locators = RadioButtonPageLocators()
@@ -105,7 +105,7 @@ class RadioButtonPage(BasePage):
 class WebTablePage(BasePage):
 
     def __init__(self, driver):
-        super().__init__(driver, url=AllURLs.WebTablePage_URL)
+        super().__init__(driver, url=ElementsPagesUrls.web_table_page_url)
         self.open()
 
     locators = WebTablePageLocators()
@@ -189,7 +189,7 @@ class WebTablePage(BasePage):
 class ButtonsPage(BasePage):
 
     def __init__(self, driver):
-        super().__init__(driver, url=AllURLs.ButtonsPage_URL)
+        super().__init__(driver, url=ElementsPagesUrls.buttons_page_url)
         self.open()
 
     locators = ButtonsPageLocators()
@@ -214,7 +214,7 @@ class ButtonsPage(BasePage):
 class LinksPage(BasePage):
 
     def __init__(self, driver):
-        super().__init__(driver, url=AllURLs.LinksPage_URL)
+        super().__init__(driver, url=ElementsPagesUrls.links_page_url)
         self.open()
 
     locators = LinksPageLocators()
@@ -236,7 +236,7 @@ class LinksPage(BasePage):
 class UploadAndDownloadPage(BasePage):
 
     def __init__(self, driver):
-        super().__init__(driver, url=AllURLs.UploadAndDownload_URL)
+        super().__init__(driver, url=ElementsPagesUrls.upload_and_download_url)
         self.open()
 
     locators = UploadAndDownloadPageLocators
@@ -274,7 +274,7 @@ class UploadAndDownloadPage(BasePage):
 class DynamicPropertiesPage(BasePage):
 
     def __init__(self, driver):
-        super().__init__(driver, url=AllURLs.DynamicProperties_URL)
+        super().__init__(driver, url=ElementsPagesUrls.dynamic_properties_url)
         self.open()
 
     locators = DynamicPropertiesPageLocators
