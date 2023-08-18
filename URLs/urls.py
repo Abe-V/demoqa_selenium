@@ -1,9 +1,13 @@
-class AllURLs:
-    TextBoxPage_URL = 'https://demoqa.com/text-box'
-    CheckBoxPage_URL = 'https://demoqa.com/checkbox'
-    RadioButtonPage_URL = 'https://demoqa.com/radio-button'
-    WebTablePage_URL = 'https://demoqa.com/webtables'
-    ButtonsPage_URL = 'https://demoqa.com/buttons'
-    LinksPage_URL = 'https://demoqa.com/links'
-    UploadAndDownload_URL = 'https://demoqa.com/upload-download'
-    DynamicProperties_URL = 'https://demoqa.com/dynamic-properties'
+class ElementsPagesUrls:
+    text_box_page_url = 'https://demoqa.com/text-box'
+    check_box_page_url = 'https://demoqa.com/checkbox'
+    radio_button_page_url = 'https://demoqa.com/radio-button'
+    web_table_page_url = 'https://demoqa.com/webtables'
+    buttons_page_url = 'https://demoqa.com/buttons'
+    links_page_url = 'https://demoqa.com/links'
+    upload_and_download_url = 'https://demoqa.com/upload-download'
+    dynamic_properties_url = 'https://demoqa.com/dynamic-properties'
+
+
+class FormsPagesUrls:
+    practice_form_url = 'https://demoqa.com/automation-practice-form'
