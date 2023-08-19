@@ -1,5 +1,4 @@
 import time
-
 import locators.forms_page_locators
 from pages.base_page import BasePage
 from URLs.urls import FormsPagesUrls as url
