@@ -6,4 +6,4 @@ class TestPracticeFormPage:
 
     def test_submitting_of_form(self, driver):
         practice_form_page = PracticeFormPage(driver)
-        practice_form_page.fill_fields_to_submit()
+        practice_form_page.fill_required_fields()
