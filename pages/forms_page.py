@@ -1,5 +1,6 @@
-import time
+import random
 import locators.forms_page_locators
+from generator.generator import generated_person
 from pages.base_page import BasePage
 from URLs.urls import FormsPagesUrls as url
 
@@ -15,8 +16,26 @@ class PracticeFormPage(BasePage):
 
     locators = locators.forms_page_locators.PracticeFormPageLocators
 
-    def fill_all_required_fields(self):
-        pass
+    def fill_required_fields(self):
+        person = next(generated_person())
+        first_name = person.first_name
+        last_name = person.last_name
+        mobile = person.phone_number
+        self.element_is_present(self.locators.FIRST_NAME_INPUT).send_keys(first_name)
+        self.element_is_present(self.locators.LAST_NAME_INPUT).send_keys(last_name)
+        self.element_is_present(self.locators.MOBILE_INPUT).send_keys(mobile)
+        gender = self.choose_gender()
+        return first_name, last_name, mobile, gender
+
+    def choose_gender(self):
+        genders = [
+            self.locators.MALE_RADIO_BUTTON,
+            self.locators.FEMALE_RADIO_BUTTON,
+            self.locators.OTHER_GENDER_RADIO_BUTTON
+        ]
+        button = self.element_is_visible(random.choice(genders))
+        button.click()
+        return button.text
 
     def fill_random_unrequired_fields(self):
         pass

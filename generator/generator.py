@@ -1,5 +1,4 @@
 import random
-
 from data.data import Person
 from faker import Faker
 
@@ -20,6 +19,7 @@ def generated_person():
         department=faker_en.job()[:25],
         current_address=faker_en.address().replace('\n', ' '),
         permanent_address=faker_en.address().replace('\n', ' '),
+        phone_number=int(''.join(filter(str.isdigit, faker_en.basic_phone_number())))
     )
 
 

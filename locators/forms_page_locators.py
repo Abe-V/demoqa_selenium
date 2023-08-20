@@ -7,9 +7,9 @@ class PracticeFormPageLocators:
     LAST_NAME_INPUT = (By.CSS_SELECTOR, 'input[id="lastName"]')
     MOBILE_INPUT = (By.CSS_SELECTOR, 'input[id="userNumber"]')
     # Required to choose one of gender options
-    MALE_RADIO_BUTTON = (By.CSS_SELECTOR, 'input[id="gender-radio-1"]')
-    FEMALE_RADIO_BUTTON = (By.CSS_SELECTOR, 'input[id="gender-radio-2"]')
-    OTHER_RADIO_BUTTON = (By.CSS_SELECTOR, 'input[id="gender-radio-3"]')
+    MALE_RADIO_BUTTON = (By.CSS_SELECTOR, 'div[id="genterWrapper"] div div:nth-child(1)')
+    FEMALE_RADIO_BUTTON = (By.CSS_SELECTOR, 'div[id="genterWrapper"] div div:nth-child(2)')
+    OTHER_GENDER_RADIO_BUTTON = (By.CSS_SELECTOR, 'div[id="genterWrapper"] div div:nth-child(2)')
 
     # NOT required fields
     EMAIL_INPUT = (By.CSS_SELECTOR, 'input[id="userEmail"]')
