@@ -16,9 +16,11 @@ class PracticeFormPageLocators:
     DATE_OF_BIRTH_INPUT = (By.CSS_SELECTOR, 'input[id="dateOfBirthInput"]')
     SELECT_MONTH = (By.CSS_SELECTOR, 'select[class="react-datepicker__month-select"]')
     SELECT_YEAR = (By.CSS_SELECTOR, 'select[class="react-datepicker__year-select"]')
-    # CALENDAR returns a list of up to 6 weeks, each week consist of list of up to 7 days (1-31)
-    CALENDAR = (By.CSS_SELECTOR, 'div[class="react-datepicker__week"]')
-    SUBJECTS_INPUT = (By.XPATH, '//*[@id="subjectsWrapper"]/div/div/div/div[1]')
+    # SELECT_DAY contains a list of up to 42 elements, 7 days for 6 weeks, including
+    # (28-31 days of current month plus up to 12 of days of previous and next month on first and last week)
+    SELECT_DAY = (By.CSS_SELECTOR, 'div[class="react-datepicker__week"] div')
+    SUBJECTS_INPUT = (By.CSS_SELECTOR, 'input[id="subjectsInput"]')
+    SUBJECTS_LIST = (By.CSS_SELECTOR, 'div[class*="subjects-auto-complete__menu-list"]')
     SPORTS_CHECKBOX = (By.CSS_SELECTOR, 'input[id="hobbies-checkbox-1"]')
     READING_CHECKBOX = (By.CSS_SELECTOR, 'input[id="hobbies-checkbox-2"]')
     MUSIC_CHECKBOX = (By.CSS_SELECTOR, 'input[id="hobbies-checkbox-3"]')
@@ -29,6 +31,5 @@ class PracticeFormPageLocators:
     # since only one of them can appear at a time
     LIST_OF_STATES = (By.CSS_SELECTOR, 'div[class$="-menu"] div')
     SELECT_CITY = (By.XPATH, '//div[text()="Select City"]')
-
     LIST_OF_CITIES = (By.CSS_SELECTOR, 'div[class$="-menu"] div')
     SUBMIT_BUTTON = (By.CSS_SELECTOR, 'button[id="submit"]')
