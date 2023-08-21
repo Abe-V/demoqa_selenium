@@ -1,4 +1,4 @@
-from selenium.webdriver import ActionChains
+from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -59,3 +59,6 @@ class BasePage:
 
     def check_current_zoom(self):
         return int(float(self.driver.execute_script("return window.getComputedStyle(document.body, null).zoom"))*100)
+
+    def select_text(self, locator):
+        self.element_is_visible(locator).send_keys(Keys.COMMAND + 'a')

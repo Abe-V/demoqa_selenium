@@ -13,7 +13,7 @@ from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLoc
     WebTablePageLocators, ButtonsPageLocators, LinksPageLocators, UploadAndDownloadPageLocators, \
     DynamicPropertiesPageLocators
 
-# for each class respective URL will be assigned as url argument for BasePage,
+# for each class respective URL will be assigned as 'url' argument for BasePage,
 # and page with respective URL will be opened
 
 
