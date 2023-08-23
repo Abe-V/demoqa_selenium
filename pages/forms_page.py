@@ -98,6 +98,31 @@ class PracticeFormPage(BasePage):
             self.element_is_clickable(self.locators.SUBJECTS_INPUT).send_keys(Keys.RETURN)
         return selected_subjects
 
+    # choose random checkboxes by default
+    def click_choose_all_hobbies(self, value=None):
+        value = [random.randint(0, 1) for _ in range(3)] if value is None else value
+        checkbox = [
+            self.locators.SPORTS_CHECKBOX,
+            self.locators.READING_CHECKBOX,
+            self.locators.MUSIC_CHECKBOX
+        ]
+        inputs = [
+            self.locators.SPORTS_CHECKBOX_INPUT,
+            self.locators.READING_CHECKBOX_INPUT,
+            self.locators.MUSIC_CHECKBOX_INPUT
+        ]
+        hobbies = dict(zip(checkbox, inputs))
+        checked = []
+        counter = 0
+        for checkbox, status in hobbies.items():
+            flag = value[counter]
+            if flag:
+                self.element_is_clickable(checkbox).click()
+                time.sleep(1)
+            if self.driver.find_element(*status).is_selected():
+                checked.append(self.driver.find_element(*checkbox).text)
+        return checked
+
     def fill_random_unrequired_fields(self):
         person = next(generated_person())
         email = person.email
