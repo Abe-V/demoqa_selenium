@@ -1,8 +1,7 @@
+# common imports
 import random
-import time
-
+from datetime import datetime
 from selenium.common import TimeoutException, StaleElementReferenceException
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
 
@@ -13,10 +12,8 @@ from pages.base_page import BasePage
 from URLs.urls import FormsPagesUrls as url
 
 
-# for each page-class respective URL will be assigned as url argument for BasePage,
+# For each page-class - respective URL will be assigned as a 'url' argument for BasePage,
 # and page with respective URL will be opened
-
-
 class PracticeFormPage(BasePage):
 
     def __init__(self, driver):
@@ -25,17 +22,23 @@ class PracticeFormPage(BasePage):
 
     locators = locators.forms_page_locators.PracticeFormPageLocators
 
-    # methods to fill required fields
-    def choose_gender(self):
-        genders = [
-            self.locators.MALE_RADIO_BUTTON,
-            self.locators.FEMALE_RADIO_BUTTON,
-            self.locators.OTHER_GENDER_RADIO_BUTTON
-        ]
-        button = self.element_is_visible(random.choice(genders))
+    # gender is a required field. choose_gender() chooses random gender if not specified
+    def choose_gender(self, gender=None):
+        genders = {
+            'male': self.locators.MALE_RADIO_BUTTON,
+            'female': self.locators.FEMALE_RADIO_BUTTON,
+            'other': self.locators.OTHER_GENDER_RADIO_BUTTON
+        }
+        if gender is None:
+            button = self.element_is_visible(random.choice(list(genders.values())))
+        elif gender.lower() in genders.keys():
+            button = self.element_is_visible(genders[gender])
+        else:
+            raise ValueError("Only 'Male', 'Female' or 'Other' is allowed as an argument")
         button.click()
         return button.text
 
+    # randomly fills all required fields
     def fill_required_fields(self):
         person = next(generated_person())
         first_name = person.first_name
@@ -47,80 +50,121 @@ class PracticeFormPage(BasePage):
         gender = self.choose_gender()
         return first_name, last_name, mobile, gender
 
-    # methods to randomly fill NOT required fields
-    def fill_date_of_birth(self):
+    # method randomly fills 'Date of Birth' field, if not specified
+    # birthday can be provided in '01 Jan 2000' or '01 January 2000' format
+    def fill_date_of_birth(self, date_of_birth=None):
         # click on input field to open the calendar
-        self.element_is_visible(self.locators.DATE_OF_BIRTH_INPUT).click()
-        # choose random month
-        select_months = self.element_is_present(self.locators.SELECT_MONTH)
-        list_of_months = [i for i in select_months.text.split()]
-        select_months.click()
-        selected_month = random.choice(list_of_months)
-        month = selected_month[:3]
-        self.element_is_visible((By.XPATH, f"//option[text()='{selected_month}']")).click()
-        # select random year
-        select_year = self.element_is_visible(self.locators.SELECT_YEAR)
-        list_of_years = [int(i) for i in select_year.text.split()]
-        selected_year = random.choice(list_of_years)
-        year = selected_year
-        self.element_is_clickable((By.CSS_SELECTOR, f'option[value="{selected_year}"]')).click()
-        # select week
-        select_day = self.driver.find_elements(*self.locators.SELECT_DAY)
-        selected_day = random.choice(select_day)
-        day = selected_day.text
-        selected_day.click()
-        return f'{day} {month} {year}'
+        birthday_input = self.element_is_visible(self.locators.DATE_OF_BIRTH_INPUT)
+        birthday_input.click()
+        if date_of_birth is None:
+            # select random year
+            select_year = self.element_is_visible(self.locators.SELECT_YEAR)
+            list_of_years = [int(i) for i in select_year.text.split()]
+            year = random.choice(list_of_years)
+            self.element_is_clickable((By.CSS_SELECTOR, f'option[value="{year}"]')).click()
+            # select random month
+            select_months = self.element_is_present(self.locators.SELECT_MONTH)
+            list_of_months = [i for i in select_months.text.split()]
+            select_months.click()
+            month = random.choice(list_of_months)
+            self.element_is_visible((By.XPATH, f"//option[text()='{month}']")).click()
+            # select random day
+            select_day = self.driver.find_elements(*self.locators.SELECT_DAY)
+            selected_day = random.choice(select_day)
+            day = selected_day.text
+            selected_day.click()
+        else:
+            # if birthday is provided as an argument, validate date format
+            try:
+                datetime.strptime(date_of_birth, "%d %b %Y")
+            except ValueError:
+                try:
+                    datetime.strptime(date_of_birth, "%d %B %Y")
+                except ValueError:
+                    raise ValueError("Invalid date format. Please use '00 Mon 0000' format."
+                                     "(e.g. '01 Jan 2000' or '01 January 2000')")
+            self.select_text(self.locators.DATE_OF_BIRTH_INPUT)
+            birthday_input.send_keys(date_of_birth)
+            day, month, year = (i for i in date_of_birth.split())
+        return f'{day} {month[:3]} {year}'
 
-    def choose_subjects(self, number_of_subjects):
+    # method to choose random number of subjects, if not specified
+    def choose_subjects(self, number_of_subjects=None):
+        # maximum number of subjects can be added on a site is 10
         if number_of_subjects > 10:
             raise Exception('Maximum number of subjects can be added is 10')
+        if number_of_subjects is None:
+            number_of_subjects = random.randint(10)
+        # create alphabet
         alphabet = [chr(ord('a') + i) for i in range(26)]
         selected_subjects = []
+        # unless desired number of subjects reached
         while len(selected_subjects) < number_of_subjects:
+            # type random letter
             self.element_is_visible(self.locators.SUBJECTS_INPUT).send_keys(random.choice(alphabet))
+            # and see if list of subjects containing this letter drop down
             try:
                 subjects_list = self.element_is_present(self.locators.SUBJECTS_LIST, 1)
+                # if there is a list, assign it to 'subjects_options'
                 subjects_options = subjects_list.text.split('\n')
+                # if there is no list of subjects available,
             except StaleElementReferenceException:
+                # then select inputted letter,(so new letter input will overwrite existing),
                 self.select_text(self.locators.SUBJECTS_INPUT)
+                # and start loop over
                 continue
+                # NOTE: deleting all subjects and letters from this field leads to displaying fully empty (blank) page
             except TimeoutException:
                 self.select_text(self.locators.SUBJECTS_INPUT)
                 continue
             else:
-                if subjects_options[0] == 'Loading...':
+                # if there is no subjects containing typed in letter,
+                # a dropdown menu saying 'Loading...' appears for really short period of time (milliseconds)
+                if 'Loading...' in subjects_options:
                     self.select_text(self.locators.SUBJECTS_INPUT)
                     continue
+            # choose random subject from dropdown list
             subject = random.choice(subjects_options)
             selected_subjects.append(subject)
+            # select all text in the field, so new text will fully overwrite existing text
             self.select_text(self.locators.SUBJECTS_INPUT)
+            # enter full random subject name in the field
             self.element_is_visible(self.locators.SUBJECTS_INPUT).send_keys(subject)
+            # and press ENTER
             self.element_is_clickable(self.locators.SUBJECTS_INPUT).send_keys(Keys.RETURN)
         return selected_subjects
 
-    # choose random checkboxes by default
-    def click_choose_all_hobbies(self, value=None):
-        value = [random.randint(0, 1) for _ in range(3)] if value is None else value
-        checkbox = [
-            self.locators.SPORTS_CHECKBOX,
-            self.locators.READING_CHECKBOX,
-            self.locators.MUSIC_CHECKBOX
-        ]
-        inputs = [
-            self.locators.SPORTS_CHECKBOX_INPUT,
-            self.locators.READING_CHECKBOX_INPUT,
-            self.locators.MUSIC_CHECKBOX_INPUT
-        ]
-        hobbies = dict(zip(checkbox, inputs))
+    # check random hobbies by default, if not specified
+    def choose_hobbies(self, *choose):
         checked = []
-        counter = 0
-        for checkbox, status in hobbies.items():
-            flag = value[counter]
-            if flag:
-                self.element_is_clickable(checkbox).click()
-                time.sleep(1)
-            if self.driver.find_element(*status).is_selected():
-                checked.append(self.driver.find_element(*checkbox).text)
+        hobbies = {
+            'Sports':
+                {'locator': self.locators.SPORTS_CHECKBOX, 'checked': 0},
+            'Reading':
+                {'locator': self.locators.READING_CHECKBOX, 'checked': 0},
+            'Music':
+                {'locator': self.locators.MUSIC_CHECKBOX, 'checked': 0}
+        }
+        # if no arguments were received, create list of random values between (0, 1) for each hobby
+        if not choose:
+            for n, hobby in enumerate(hobbies):
+                hobbies[hobby]['checked'] = random.randint(0, 1)
+        # if checkboxes were chosen and received as a parameters
+        else:
+            # iterate over received parameters, capitalizing each
+            for choice in choose:
+                choice = choice.capitalize()
+                # if spelling is correct, define 'checked' value as 1
+                if choice in hobbies:
+                    hobbies[choice]['checked'] = 1
+                # if its misspelling, raise Error, printing available checkboxes
+                else:
+                    raise ValueError(f"Only {tuple(hobbies.keys())} checkboxes can be checked")
+        # click every checkbox that has 'checked' value equal 1
+        for hobby in hobbies:
+            if hobbies[hobby]['checked']:
+                self.element_is_clickable(hobbies[hobby]['locator']).click()
+                checked.append(hobby)
         return checked
 
     def fill_random_unrequired_fields(self):
