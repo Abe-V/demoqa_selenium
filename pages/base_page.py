@@ -35,6 +35,9 @@ class BasePage:
     def scroll_to_element(self, element):
         self.driver.execute_script("window.scrollBy(0,200);", element)
 
+    def scroll_all_the_way_down(self):
+        self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
     def action_double_click(self, element):
         action = ActionChains(driver=self.driver)
         action.double_click(element)
