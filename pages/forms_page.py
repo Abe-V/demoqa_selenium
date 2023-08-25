@@ -1,4 +1,5 @@
 # common imports
+import os
 import random
 from datetime import datetime
 from selenium.common import TimeoutException, StaleElementReferenceException
@@ -7,7 +8,7 @@ from selenium.webdriver.common.by import By
 
 # my directories imports
 import locators.forms_page_locators
-from generator.generator import generated_person
+from generator.generator import generated_person,generate_jpeg
 from pages.base_page import BasePage
 from URLs.urls import FormsPagesUrls as url
 
@@ -139,11 +140,11 @@ class PracticeFormPage(BasePage):
         checked = []
         hobbies = {
             'Sports':
-                {'locator': self.locators.SPORTS_CHECKBOX, 'checked': 0},
+                {'locator': self.locators.SPORTS_CHECKBOX, 'checked': None},
             'Reading':
-                {'locator': self.locators.READING_CHECKBOX, 'checked': 0},
+                {'locator': self.locators.READING_CHECKBOX, 'checked': None},
             'Music':
-                {'locator': self.locators.MUSIC_CHECKBOX, 'checked': 0}
+                {'locator': self.locators.MUSIC_CHECKBOX, 'checked': None}
         }
         # if no arguments were received, create list of random values between (0, 1) for each hobby
         if not choose:
@@ -167,24 +168,36 @@ class PracticeFormPage(BasePage):
                 checked.append(hobby)
         return checked
 
-    def fill_random_unrequired_fields(self):
-        person = next(generated_person())
-        email = person.email
+    def upload_jpeg_file(self):
+        # generating file on a local machine
+        path = generate_jpeg()
+        self.element_is_visible(self.locators.CHOOSE_FILE_BUTTON).send_keys(path)
+        # delete file from a local machine
+        os.remove(path)
+        # get path of uploaded file ('C:\fakepath\{real_file_name.ext})
+        uploaded = self.element_is_visible(self.locators.CHOOSE_FILE_BUTTON).get_attribute('value')
+        return path.split('/')[-1], uploaded.split("\\")[-1]
 
-    def upload_file(self):
+    def fill_address(self):
+        person = next(generated_person())
+        address = person.current_address
+        # self.scroll_all_the_way_down()
+        self.element_is_visible(self.locators.CURRENT_ADDRESS_INPUT).send_keys(address)
+        return address
+
+    # code below not ready yet
+    def select_state_and_city(self):
+        self.set_page_zoom(50)
+        self.go_to_element(self.element_is_present(self.locators.SELECT_STATE))
+        self.element_is_clickable(self.locators.SELECT_STATE).click()
+        list_of_states = self.element_is_visible(self.locators.LIST_OF_STATES).text
+        return list_of_states
+
+    def fill_random_unrequired_fields(self):
         pass
 
     def fill_fields_to_submit(self):
         pass
-        # current_zoom = self.check_current_zoom()
-        # all_zooms = [current_zoom]
-        # for i in range(0, 8):
-        #     zoom = current_zoom - 10
-        #     self.set_page_zoom(zoom)
-        #     current_zoom = self.check_current_zoom()
-        #     all_zooms.append(current_zoom)
-        #     time.sleep(1)
-        # return all_zooms
 
     def click_submit(self):
         pass
