@@ -29,10 +29,8 @@ class PracticeFormPageLocators:
     MUSIC_CHECKBOX_INPUT = (By.CSS_SELECTOR, 'input[id="hobbies-checkbox-3"]')
     CHOOSE_FILE_BUTTON = (By.CSS_SELECTOR, 'input[id="uploadPicture"]')
     CURRENT_ADDRESS_INPUT = (By.CSS_SELECTOR, 'textarea[id="currentAddress"]')
-    SELECT_STATE = (By.CSS_SELECTOR, 'input[id="react-select-3-input"]')
-    # LIST_OF_STATES is dynamic element and has same locator as LIST_OF_CITIES
-    # since only one of them can appear at a time
-    LIST_OF_STATES = (By.CSS_SELECTOR, 'div[id="state"]>div:nth-child(2)>div')
-    SELECT_CITY = (By.XPATH, '//div[text()="Select City"]')
-    LIST_OF_CITIES = (By.CSS_SELECTOR, 'div[class$="-menu"] div')
+    SELECT_STATE = (By.CSS_SELECTOR, 'div[id="state"]')
+    STATE_INPUT = (By.CSS_SELECTOR, 'input[id="react-select-3-input"]')
+    SELECT_CITY = (By.CSS_SELECTOR, 'div[id="city"]')
+    CITY_INPUT = (By.CSS_SELECTOR, 'input[id="react-select-4-input"]')
     SUBMIT_BUTTON = (By.CSS_SELECTOR, 'button[id="submit"]')

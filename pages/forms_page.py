@@ -185,13 +185,74 @@ class PracticeFormPage(BasePage):
         self.element_is_visible(self.locators.CURRENT_ADDRESS_INPUT).send_keys(address)
         return address
 
-    # code below not ready yet
-    def select_state_and_city(self):
-        self.set_page_zoom(50)
-        self.go_to_element(self.element_is_present(self.locators.SELECT_STATE))
+    # select random State if not specified
+    def select_state(self, state=None):
+        # remove ad banner to have access to 'State and City' field
+        self.driver.execute_script(f'document.getElementById("fixedban").remove();')
+        # scroll all the way down
+        self.scroll_all_the_way_down()
+        # click 'Select State' field
         self.element_is_clickable(self.locators.SELECT_STATE).click()
-        list_of_states = self.element_is_visible(self.locators.LIST_OF_STATES).text
-        return list_of_states
+        num_of_elements = 0
+        list_of_states = []
+        # iterate over every state in a dropdown list and add it to list_of_states
+        while True:
+            try:
+                element = self.element_is_present((By.CSS_SELECTOR, f'div[id="react-select-3-option-{num_of_elements}"]'), 1)
+                list_of_states.append(element.text)
+                num_of_elements += 1
+            except TimeoutException:
+                print(f'{num_of_elements} states are presented')
+                break
+        # select random state and press 'ENTER'
+        if state is None:
+            selected_state = random.choice(list_of_states)
+        else:
+            selected_state = state
+            # validate argument
+            try:
+                self.element_is_visible(self.locators.STATE_INPUT).send_keys(selected_state)
+            except TypeError:
+                print(f'Only next states available for choice: {list_of_states}')
+        self.element_is_visible(self.locators.STATE_INPUT).send_keys(Keys.RETURN)
+        return selected_state
+
+    # select random State if not specified
+    def select_city(self, city=None):
+        # # remove ad banner to have access to 'State and City' field
+        # self.driver.execute_script(f'document.getElementById("fixedban").remove();')
+        # # scroll all the way down
+        # self.scroll_all_the_way_down()
+        # click 'Select City' field
+        self.element_is_clickable(self.locators.SELECT_CITY).click()
+        num_of_elements = 0
+        list_of_cities = []
+        # iterate over every city in a dropdown list and add it to list_of_cities
+        while True:
+            try:
+                element = self.element_is_present((By.CSS_SELECTOR, f'div[id="react-select-4-option-{num_of_elements}"]'), 1)
+                list_of_cities.append(element.text)
+                num_of_elements += 1
+            except TimeoutException:
+                print(f'{num_of_elements} cities are presented')
+                break
+        # select random city and press 'ENTER'
+        if city is None:
+            selected_city = random.choice(list_of_cities)
+        else:
+            selected_city = city
+            # validate argument
+            try:
+                self.element_is_visible(self.locators.CITY_INPUT).send_keys(selected_city)
+            except TypeError:
+                print(f'Only next cities available for choice: {list_of_cities}')
+        self.element_is_visible(self.locators.CITY_INPUT).send_keys(Keys.RETURN)
+        return selected_city
+
+    def select_state_and_city(self, state=None, city=None):
+        state = self.select_state(state)
+        city = self.select_city(city)
+        return state, city
 
     def fill_random_unrequired_fields(self):
         pass
