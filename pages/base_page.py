@@ -57,11 +57,20 @@ class BasePage:
     def switch_to_first_tab(self):
         self.driver.switch_to.window(self.driver.window_handles[0])
 
-    def set_page_zoom(self, value):
-        self.driver.execute_script(f"document.body.style.zoom = '{value}%'")
+    def set_page_zoom(self, value=None):
+        if value is None:
+            pass
+        else:
+            self.driver.execute_script(f"document.body.style.zoom = '{value}%'")
 
     def check_current_zoom(self):
         return int(float(self.driver.execute_script("return window.getComputedStyle(document.body, null).zoom"))*100)
 
     def select_text(self, locator):
         self.element_is_visible(locator).send_keys(Keys.COMMAND + 'a')
+
+    def find_elements(self, locator):
+        return self.driver.find_elements(*locator)
+
+    def find_element(self, locator):
+        return self.driver.find_element(*locator)
