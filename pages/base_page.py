@@ -1,6 +1,7 @@
 from selenium.webdriver import ActionChains, Keys
 from selenium.webdriver.support.ui import WebDriverWait as wait
 from selenium.webdriver.support import expected_conditions as EC
+from locators.forms_page_locators import PracticeFormPageLocators as PFP_Locators
 
 
 class BasePage:
@@ -74,3 +75,10 @@ class BasePage:
 
     def find_element(self, locator):
         return self.driver.find_element(*locator)
+
+    def remove_ad_banner(self):
+        self.driver.execute_script(f'document.getElementById("fixedban").remove();')
+
+    def remove_footer(self):
+        footer = self.find_element(PFP_Locators.FOOTER)
+        self.driver.execute_script("arguments[0].remove()", footer)
