@@ -34,3 +34,18 @@ class PracticeFormPageLocators:
     SELECT_CITY = (By.CSS_SELECTOR, 'div[id="city"]')
     CITY_INPUT = (By.CSS_SELECTOR, 'input[id="react-select-4-input"]')
     SUBMIT_BUTTON = (By.CSS_SELECTOR, 'button[id="submit"]')
+    FOOTER = (By.CSS_SELECTOR, 'footer')
+    FILLED_FORM = (By.XPATH, '//tbody[1]/tr/td')
+    # Student submitted form
+    STUDENT_NAME = (By.XPATH, "//*[contains(text(), 'Student Name')]")
+    STUDENT_EMAIL = (By.XPATH, "//*[contains(text(), 'Student Email')]")
+    GENDER = (By.XPATH, "//tr/*[contains(text(), 'Gender')]")
+    MOBILE = (By.XPATH, "//tr/*[contains(text(), 'Mobile')]")
+    DATE_OF_BIRTH = (By.XPATH, "//tr/*[contains(text(), 'Date of Birth')]")
+    SUBJECTS = (By.XPATH, "//tr/*[contains(text(), 'Subjects')]")
+    HOBBIES = (By.XPATH, "//tr/*[contains(text(), 'Hobbies')]")
+    PICTURE = (By.XPATH, "//tr/*[contains(text(), 'Picture')]")
+    ADDRESS = (By.XPATH, "//tr/*[contains(text(), 'Address')]")
+    STATE_AND_CITY = (By.XPATH, "//tr/*[contains(text(), 'State and City')]")
+    SUBMITTED_FORM = [STUDENT_NAME, STUDENT_EMAIL, GENDER, MOBILE, DATE_OF_BIRTH, SUBJECTS, HOBBIES, PICTURE, ADDRESS,
+                      STATE_AND_CITY]

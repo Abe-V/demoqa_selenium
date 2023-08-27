@@ -21,7 +21,7 @@ def generated_person():
         department=faker_en.job()[:25],
         current_address=faker_en.address().replace('\n', ' '),
         permanent_address=faker_en.address().replace('\n', ' '),
-        phone_number=int(''.join(filter(str.isdigit, faker_en.basic_phone_number()))),
+        phone_number=str(random.randint(1000000000, 9999999999)),
     )
 
 
