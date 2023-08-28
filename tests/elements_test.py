@@ -113,7 +113,6 @@ class TestElements:
                                  [attr for attr in vars(LinksPageLocators).values() if isinstance(attr, tuple)])
         def test_link(self, driver, locator):
             links_page = LinksPage(driver)
-            print(self.expected_fail_locators, locator)
             # try/except implemented to handle tests expected to fail due to not provided links
             try:
                 link_href, current_url, status_code = links_page.try_follow_the_link(locator)
