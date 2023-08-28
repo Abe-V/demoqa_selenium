@@ -56,16 +56,16 @@ class PracticeFormPageLocators:
     FOOTER = (By.CSS_SELECTOR, 'footer')
 
     # Student submitted form (locators for all the labels, to find the value, add '/following-sibling::*')
-    STUDENT_NAME = (By.XPATH, "//td[text()='Student Name']")
-    STUDENT_EMAIL = (By.XPATH, "//*[text()='Student Email']")
-    GENDER = (By.XPATH, "//tr/*[text()='Gender']")
-    MOBILE = (By.XPATH, "//tr/*[text()='Mobile']")
-    DATE_OF_BIRTH = (By.XPATH, "//tr/*[text()='Date of Birth']")
-    SUBJECTS = (By.XPATH, "//tr/*[text()='Subjects']")
-    HOBBIES = (By.XPATH, "//tr/*[text()='Hobbies']")
-    PICTURE = (By.XPATH, "//tr/*[text()='Picture']")
-    ADDRESS = (By.XPATH, "//tr/*[text()='Address']")
-    STATE_AND_CITY = (By.XPATH, "//tr/*[text()='State and City']")
+    STUDENT_NAME_LABEL = (By.XPATH, "//td[text()='Student Name']")
+    STUDENT_EMAIL_LABEL = (By.XPATH, "//*[text()='Student Email']")
+    GENDER_LABEL = (By.XPATH, "//tr/*[text()='Gender']")
+    MOBILE_LABEL = (By.XPATH, "//tr/*[text()='Mobile']")
+    DATE_OF_BIRTH_LABEL = (By.XPATH, "//tr/*[text()='Date of Birth']")
+    SUBJECTS_LABEL = (By.XPATH, "//tr/*[text()='Subjects']")
+    HOBBIES_LABEL = (By.XPATH, "//tr/*[text()='Hobbies']")
+    PICTURE_LABEL = (By.XPATH, "//tr/*[text()='Picture']")
+    ADDRESS_LABEL = (By.XPATH, "//tr/*[text()='Address']")
+    STATE_AND_CITY_LABEL = (By.XPATH, "//tr/*[text()='State and City']")
     # list of locators for all the labels
-    SUBMITTED_FORM = [STUDENT_NAME, STUDENT_EMAIL, GENDER, MOBILE, DATE_OF_BIRTH, SUBJECTS, HOBBIES, PICTURE, ADDRESS,
-                      STATE_AND_CITY]
+    SUBMITTED_FORM_LABELS = [STUDENT_NAME_LABEL, STUDENT_EMAIL_LABEL, GENDER_LABEL, MOBILE_LABEL, DATE_OF_BIRTH_LABEL,
+                             SUBJECTS_LABEL, HOBBIES_LABEL, PICTURE_LABEL, ADDRESS_LABEL, STATE_AND_CITY_LABEL]
