@@ -8,6 +8,7 @@ class TestPracticeFormPage:
         for _ in range(10):
             practice_form_page = PracticeFormPage(driver)
             input_data = practice_form_page.fill_the_form()
+            # bd = practice_form_page
             practice_form_page.click_submit()
             output_data = practice_form_page.check_the_form()
             # time.sleep(2)
