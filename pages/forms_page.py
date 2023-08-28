@@ -1,7 +1,6 @@
 # common imports
 import os
 import random
-import time
 from datetime import datetime
 from selenium.common import TimeoutException, StaleElementReferenceException
 from selenium.webdriver import Keys
@@ -9,19 +8,21 @@ from selenium.webdriver.common.by import By
 
 # my directories imports
 import locators.forms_page_locators
-from generator.generator import generated_person,generate_jpeg
+from generator.generator import generated_person, generate_jpeg_file
 from pages.base_page import BasePage
 from URLs.urls import FormsPagesUrls as url
 
 
 # For each page-class - respective URL will be assigned as a 'url' argument for BasePage,
-# and page with respective URL will be opened
+# and page with respective URL will be opened, and ad and footer will be removed
+
 class PracticeFormPage(BasePage):
 
     def __init__(self, driver):
         super().__init__(driver, url=url.practice_form_url)
         self.open()
         self.remove_ad_banner()
+        self.remove_footer()
 
     locators = locators.forms_page_locators.PracticeFormPageLocators
 
@@ -55,10 +56,12 @@ class PracticeFormPage(BasePage):
 
     # NOT required fields
 
-    # method randomly fills 'Date of Birth' field, if not specified
-    def fill_email(self, flag=1):
+    # method randomly fills 'Email' field, if not specified
+    def fill_email(self, email=None, flag=1):
         if not flag:
             return ''
+        if email is not None:
+            return email
         person = next(generated_person())
         email = person.email
         self.element_is_clickable(self.locators.EMAIL_INPUT).send_keys(email)
@@ -71,6 +74,7 @@ class PracticeFormPage(BasePage):
             date_value = self.element_is_present(self.locators.DATE_OF_BIRTH_INPUT).get_attribute('value')
             date_output = datetime.strptime(date_value, "%d %b %Y").strftime("%d %B %Y")
             day, month, year = (i for i in date_output.split())
+            return f'{day} {month},{year}'
         # click on input field to open the calendar
         birthday_input = self.element_is_visible(self.locators.DATE_OF_BIRTH_INPUT)
         birthday_input.click()
@@ -78,19 +82,19 @@ class PracticeFormPage(BasePage):
             # select random year
             select_year = self.element_is_visible(self.locators.SELECT_YEAR)
             list_of_years = [int(i) for i in select_year.text.split()]
-            year = random.choice(list_of_years)
-            self.element_is_clickable((By.CSS_SELECTOR, f'option[value="{year}"]')).click()
+            select_year.click()
+            self.element_is_clickable((By.CSS_SELECTOR, f'option[value="{random.choice(list_of_years)}"]')).click()
             # select random month
             select_months = self.element_is_present(self.locators.SELECT_MONTH)
             list_of_months = [i for i in select_months.text.split()]
             select_months.click()
-            month = random.choice(list_of_months)
-            self.element_is_visible((By.XPATH, f"//option[text()='{month}']")).click()
+            self.element_is_visible((By.XPATH, f"//option[text()='{random.choice(list_of_months)}']")).click()
             # select random day
             select_day = self.driver.find_elements(*self.locators.SELECT_DAY)
             selected_day = random.choice(select_day)
-            day = selected_day.text
             selected_day.click()
+            date_value = self.element_is_present(self.locators.DATE_OF_BIRTH_INPUT).get_attribute('value')
+            date_of_birth = datetime.strptime(date_value, "%d %b %Y").strftime("%d %B %Y")
         else:
             # if birthday is provided as an argument, validate date format
             try:
@@ -99,7 +103,7 @@ class PracticeFormPage(BasePage):
                 raise ValueError("Invalid date format. Please use '01 January 2000' format.")
             self.select_text(self.locators.DATE_OF_BIRTH_INPUT)
             birthday_input.send_keys(date_of_birth)
-            day, month, year = (i for i in date_of_birth.split())
+        day, month, year = (i for i in date_of_birth.split())
         return f'{day} {month},{year}'
 
     # method to choose random number of subjects, if not specified
@@ -191,7 +195,7 @@ class PracticeFormPage(BasePage):
         if not flag:
             return ''
         # generating file on a local machine
-        path = generate_jpeg()
+        path = generate_jpeg_file()
         self.element_is_visible(self.locators.CHOOSE_FILE_BUTTON).send_keys(path)
         # delete file from a local machine
         os.remove(path)
@@ -204,7 +208,6 @@ class PracticeFormPage(BasePage):
             return ''
         person = next(generated_person())
         address = person.current_address
-        # self.scroll_all_the_way_down()
         self.element_is_visible(self.locators.CURRENT_ADDRESS_INPUT).send_keys(address)
         return address
 
@@ -231,11 +234,11 @@ class PracticeFormPage(BasePage):
             selected_state = random.choice(list_of_states)
         else:
             selected_state = state
-            # validate argument
-            try:
-                self.element_is_visible(self.locators.STATE_INPUT).send_keys(selected_state)
-            except TypeError:
-                print(f'Only next states available for choice: {list_of_states}')
+        # validate argument
+        try:
+            self.element_is_visible(self.locators.STATE_INPUT).send_keys(selected_state)
+        except TypeError:
+            print(f'Only next states available for choice: {list_of_states}')
         self.element_is_visible(self.locators.STATE_INPUT).send_keys(Keys.RETURN)
         return selected_state
 
@@ -255,7 +258,7 @@ class PracticeFormPage(BasePage):
                 list_of_cities.append(element.text)
                 num_of_elements += 1
             except TimeoutException:
-                print(f'{num_of_elements} cities are presented')
+                # print(f'{num_of_elements} cities are presented')
                 break
         # select random city
         if city is None:
@@ -277,7 +280,7 @@ class PracticeFormPage(BasePage):
         if not flag2:
             return ''
         city = self.select_city(city, flag2)
-        return state, city
+        return f'{state} {city}'
 
     def fill_random_unrequired_fields(self):
         flag = random.randint
@@ -290,14 +293,13 @@ class PracticeFormPage(BasePage):
         state_and_city = self.select_state_and_city(flag1=flag(0, 1), flag2=flag(0, 1))
         return email, date_of_birth, subjects, hobbies, jpeg_file, address, state_and_city
 
-    def fill_the_form(self):
+    def fill_the_form_randomly(self):
         full_name, gender, mobile = self.fill_required_fields()
         email, date_of_birth, subjects, hobbies, picture, address, state_and_city = \
             self.fill_random_unrequired_fields()
         return [full_name, email, gender, mobile, date_of_birth, subjects, hobbies, picture, address, state_and_city]
 
     def click_submit(self):
-        self.remove_footer()
         self.scroll_all_the_way_down()
         self.element_is_clickable(self.locators.SUBMIT_BUTTON).click()
 

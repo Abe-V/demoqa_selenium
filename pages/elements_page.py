@@ -7,7 +7,7 @@ from selenium.common import TimeoutException
 from pages.base_page import BasePage
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from generator.generator import generated_person, generated_file
+from generator.generator import generated_person, generate_txt_file
 from URLs.urls import ElementsPagesUrls
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators, \
     WebTablePageLocators, ButtonsPageLocators, LinksPageLocators, UploadAndDownloadPageLocators, \
@@ -243,7 +243,7 @@ class UploadAndDownloadPage(BasePage):
 
     def upload_file(self):
         # generating file on a local machine
-        file_name, path = generated_file()
+        file_name, path = generate_txt_file()
         # send created file's path as a chosen file
         self.element_is_present(self.locators.UPLOAD_FILE).send_keys(path)
         # delete file from a local machine

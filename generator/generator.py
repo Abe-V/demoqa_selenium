@@ -25,7 +25,7 @@ def generated_person():
     )
 
 
-def generated_file():
+def generate_txt_file():
     path = f'/Users/abeazovsky/Desktop/automation_qa_course/filetest{random.randint(0, 999)}.txt'
     file = open(path, 'w+')
     file.write(f'Hello World{random.randint(0, 999)}')
@@ -33,9 +33,9 @@ def generated_file():
     return file.name, path
 
 
-def generate_jpeg():
+def generate_jpeg_file():
     # Create a new image with a white background
-    width, height = random.randint(1, 1920), random.randint(1, 1080)
+    width, height = random.randint(100, 1920), random.randint(100, 1080)
     # RGB color
     background_color = tuple(random.randint(0, 255) for _ in range(3))
     image = Image.new('RGB', (width, height), background_color)
@@ -44,10 +44,10 @@ def generate_jpeg():
     # Rectangle RGB color
     rectangle_color = tuple(random.randint(0, 255) for _ in range(3))
     # Rectangle coordinates (Left, Upper, Right, Lower)
-    x0 = random.randint(1, width-1)
-    x1 = random.randint(x0, width)
-    y0 = random.randint(1, height-1)
-    y1 = random.randint(y0, height)
+    x0 = random.randint(1, width-2)
+    x1 = random.randint(x0+1, width)
+    y0 = random.randint(1, height-2)
+    y1 = random.randint(y0+1, height)
     rectangle_coords = (x0, y0, x1, y1)
     draw.rectangle(rectangle_coords, fill=rectangle_color)
     parent_directory = os.path.dirname(os.getcwd())
