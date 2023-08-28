@@ -68,7 +68,9 @@ class PracticeFormPage(BasePage):
     # birthday can be provided in '01 Jan 2000' or '01 January 2000' format
     def fill_date_of_birth(self, date_of_birth=None, flag=1):
         if not flag:
-            return ''
+            date_value = self.element_is_present(self.locators.DATE_OF_BIRTH_INPUT).get_attribute('value')
+            date_output = datetime.strptime(date_value, "%d %b %Y").strftime("%d %B %Y")
+            day, month, year = (i for i in date_output.split())
         # click on input field to open the calendar
         birthday_input = self.element_is_visible(self.locators.DATE_OF_BIRTH_INPUT)
         birthday_input.click()
@@ -98,8 +100,6 @@ class PracticeFormPage(BasePage):
             self.select_text(self.locators.DATE_OF_BIRTH_INPUT)
             birthday_input.send_keys(date_of_birth)
             day, month, year = (i for i in date_of_birth.split())
-            if int(day) < 10:
-                day = f'0{day}'
         return f'{day} {month},{year}'
 
     # method to choose random number of subjects, if not specified
@@ -304,10 +304,8 @@ class PracticeFormPage(BasePage):
     def check_the_form(self):
         all_fields_locators = self.locators.SUBMITTED_FORM
         all_outputs = []
-        for locator in all_fields_locators:
-            # print(locator)
-            self.element_is_present(locator)
-            element = self.find_element(locator)
-            sibling_element = element.find_element(By.XPATH, "following-sibling::*")
-            all_outputs.append(sibling_element.text)
+        for label in all_fields_locators:
+            locator = (By.XPATH, f'{label[1]}/following-sibling::*')
+            value = self.element_is_visible(locator).text
+            all_outputs.append(value)
         return all_outputs
