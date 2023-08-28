@@ -304,7 +304,7 @@ class PracticeFormPage(BasePage):
         self.element_is_clickable(self.locators.SUBMIT_BUTTON).click()
 
     def check_the_form(self):
-        all_fields_locators = self.locators.SUBMITTED_FORM
+        all_fields_locators = self.locators.SUBMITTED_FORM_LABELS
         all_outputs = []
         for label in all_fields_locators:
             locator = (By.XPATH, f'{label[1]}/following-sibling::*')
