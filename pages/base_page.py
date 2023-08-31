@@ -50,6 +50,7 @@ class BasePage:
         action.perform()
 
     def switch_to_new_tab(self):
+        wait(self.driver, 5).until(EC.number_of_windows_to_be(2))
         self.driver.switch_to.window(self.driver.window_handles[1])
 
     def close_current_tab(self):
@@ -82,3 +83,6 @@ class BasePage:
     def remove_footer(self):
         footer = self.find_element(PFP_Locators.FOOTER)
         self.driver.execute_script("arguments[0].remove()", footer)
+
+    def get_current_url(self):
+        return self.driver.current_url
