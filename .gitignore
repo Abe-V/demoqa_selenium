@@ -1,2 +1,17 @@
 .idea
 debug.py
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual environment
+venv/
+.venv/
+
+# Pytest
+.pytest_cache/
+
+# OS
+.DS_Store
