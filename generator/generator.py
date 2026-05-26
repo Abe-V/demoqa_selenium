@@ -3,6 +3,7 @@ import random
 from data.data import Person
 from faker import Faker
 from PIL import Image, ImageDraw
+import tempfile
 
 faker_ru = Faker('ru_RU')
 faker_en = Faker('en_US')
@@ -26,11 +27,10 @@ def generated_person():
 
 
 def generate_txt_file():
-    path = f'/Users/abeazovsky/Desktop/automation_qa_course/filetest{random.randint(0, 999)}.txt'
-    file = open(path, 'w+')
-    file.write(f'Hello World{random.randint(0, 999)}')
-    file.close()
-    return file.name, path
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.txt', mode='w', prefix='filetest') as file:
+        file.write(f'Hello World, {random.randint(0, 999)}')
+        path = file.name
+        return os.path.basename(path), path
 
 
 def generate_jpeg_file():

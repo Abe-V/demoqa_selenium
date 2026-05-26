@@ -1,6 +1,7 @@
 import base64
 import os
 import random
+import tempfile
 import requests
 from requests.exceptions import InvalidSchema
 from selenium.common import TimeoutException
@@ -255,10 +256,11 @@ class UploadAndDownloadPage(BasePage):
     def download_file(self):
         # gets links for downloading file
         link = self.element_is_clickable(self.locators.DOWNLOAD_FILE).get_attribute('href')
-        # decodes base64 code into a base16 code
+        # decodes base64 href into raw jpeg bytes
         link_b = base64.b64decode(link)
         # create new JPEG file on a local machine
-        path_name_file = f"/Users/abeazovsky/Desktop/automation_qa_course/filetest{random.randint(0, 999)}.jpeg"
+        fd, path_name_file = tempfile.mkstemp(suffix='.jpeg', prefix='filetest')
+        os.close(fd)
         # open created file and insert base16 code
         with open(path_name_file, 'wb+') as f:
             # '\xff\xd8' is a start of jpeg code (always)
