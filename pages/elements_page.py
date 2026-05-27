@@ -56,7 +56,7 @@ class CheckBoxPage(BasePage):
     locators = CheckBoxPageLocators()
 
     def open_full_list(self):
-        self.element_is_visible(self.locators.EXPAND_ALL_BUTTON).click()
+        self.element_is_visible(self.locators.EXPAND_SWITCHER).click()
 
     def click_random_checkbox(self):
         item_list = self.elements_are_visible(self.locators.ITEM_LIST)
