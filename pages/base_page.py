@@ -41,12 +41,12 @@ class BasePage:
 
     def action_double_click(self, element):
         action = ActionChains(driver=self.driver)
-        action.double_click(element)
+        action.move_to_element(element).double_click(element)
         action.perform()
 
     def action_right_click(self, element):
         action = ActionChains(driver=self.driver)
-        action.context_click(element)
+        action.move_to_element(element).context_click(element)
         action.perform()
 
     def switch_to_new_tab(self):
