@@ -139,40 +139,40 @@ class TestElements:
             assert check is True, 'The file has not been downloaded'
 
 
-class TestDynamicPropertiesPage:
+    class TestDynamicPropertiesPage:
 
-    def test_text_with_random_id(self, driver):
-        dynamic_properties_page = DynamicPropertiesPage(driver)
-        text = dynamic_properties_page.get_text()
-        assert text == "This text has random Id", 'Text is not as expected'
+        def test_text_with_random_id(self, driver):
+            dynamic_properties_page = DynamicPropertiesPage(driver)
+            text = dynamic_properties_page.get_text()
+            assert text == "This text has random Id", 'Text is not as expected'
 
-    def test_will_enable_5_seconds_button(self, driver):
-        dynamic_properties_page = DynamicPropertiesPage(driver)
-        #  checking if button is enabled
-        before = dynamic_properties_page.check_will_enable_5_seconds_button_clickability()
-        # 5 secs explicit wait
-        time.sleep(5)
-        #  checking if button is enabled
-        after = dynamic_properties_page.check_will_enable_5_seconds_button_clickability()
-        assert not before, 'Button has been enabled too early'
-        assert after, 'Button is not enabled yet'
+        def test_will_enable_5_seconds_button(self, driver):
+            dynamic_properties_page = DynamicPropertiesPage(driver)
+            #  checking if button is enabled
+            before = dynamic_properties_page.check_will_enable_5_seconds_button_clickability()
+            # 5 secs explicit wait
+            time.sleep(5)
+            #  checking if button is enabled
+            after = dynamic_properties_page.check_will_enable_5_seconds_button_clickability()
+            assert not before, 'Button has been enabled too early'
+            assert after, 'Button is not enabled yet'
 
-    def test_change_color_button(self, driver):
-        dynamic_properties_page = DynamicPropertiesPage(driver)
-        # checks current color, no waits
-        color_before = dynamic_properties_page.check_color_change_button_color()
-        time.sleep(5)
-        # checks current color, no waits
-        color_after = dynamic_properties_page.check_color_change_button_color()
-        assert color_before != color_after, 'Color did not changed'
+        def test_change_color_button(self, driver):
+            dynamic_properties_page = DynamicPropertiesPage(driver)
+            # checks current color, no waits
+            color_before = dynamic_properties_page.check_color_change_button_color()
+            time.sleep(5)
+            # checks current color, no waits
+            color_after = dynamic_properties_page.check_color_change_button_color()
+            assert color_before != color_after, 'Color did not changed'
 
-    def test_visible_after_5_seconds_button(self, driver):
-        dynamic_properties_page = DynamicPropertiesPage(driver)
-        # checking if button is enabled
-        before = dynamic_properties_page.check_visible_after_5_seconds_button()
-        # 5 sec explicit wait
-        time.sleep(5)
-        # checking if button is enabled
-        after = dynamic_properties_page.check_visible_after_5_seconds_button()
-        assert not before, 'Button has been enabled too early'
-        assert after, 'Button is not enabled yet'
+        def test_visible_after_5_seconds_button(self, driver):
+            dynamic_properties_page = DynamicPropertiesPage(driver)
+            # checking if button is enabled
+            before = dynamic_properties_page.check_visible_after_5_seconds_button()
+            # 5 sec explicit wait
+            time.sleep(5)
+            # checking if button is enabled
+            after = dynamic_properties_page.check_visible_after_5_seconds_button()
+            assert not before, 'Button has been enabled too early'
+            assert after, 'Button is not enabled yet'
