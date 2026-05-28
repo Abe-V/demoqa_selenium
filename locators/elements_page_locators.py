@@ -114,7 +114,7 @@ class UploadAndDownloadPageLocators:
 
 class DynamicPropertiesPageLocators:
     # simple text path
-    TEXT_WITH_RANDOM_ID = (By.CSS_SELECTOR, 'div[class="col-12 mt-4 col-md-6"]  div:nth-child(2) p')
+    TEXT_WITH_RANDOM_ID = (By.XPATH, "//p[contains(text(), 'This text has random Id')]")
     # "Will enable 5 seconds" button
     WILL_ENABLE_5_SECONDS_BUTTON = (By.CSS_SELECTOR, 'button[id="enableAfter"]')
     # 'Color change' button
