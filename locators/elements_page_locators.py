@@ -50,11 +50,11 @@ class WebTablePageLocators:
     SUBMIT_BUTTON = (By.CSS_SELECTOR, "button[id='submit']")
 
     # table
-    FULL_PEOPLE_LIST = (By.CSS_SELECTOR, "div[class='rt-tr-group']")
+    TABLE_ROWS = (By.CSS_SELECTOR, "div.web-tables-wrapper table tbody tr")
     SEARCH_INPUT = (By.CSS_SELECTOR, 'input[id="searchBox"]')
     DELETE_BUTTON = (By.CSS_SELECTOR, "span[title='Delete']")
-    ROW_PARENT = ".//ancestor::div[@class='rt-tr-group']"
-    NO_ROWS_FOUND = (By.CSS_SELECTOR, "div[class='rt-noData']")
+    ROW_PARENT = (By.XPATH, ".//ancestor::tr")
+    NO_ROWS_FOUND = (By.XPATH, "//*[contains(text(), 'No rows found')]")
     COUNT_ROW_LIST = (By.CSS_SELECTOR, "select[aria-label='rows per page']")
     # SELECT_5_ROWS = (By.CSS_SELECTOR, "option[value='5']")
     # SELECT_10_ROWS = (By.CSS_SELECTOR, "option[value='10']")

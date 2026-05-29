@@ -52,7 +52,7 @@ class TestElements:
             web_table_page = WebTablePage(driver)
             new_person = web_table_page.add_new_person()
             table_result = web_table_page.check_new_added_person()
-            assert new_person in table_result
+            assert new_person == table_result
 
         def test_web_table_search_person(self, driver):
             web_table_page = WebTablePage(driver)
@@ -74,8 +74,7 @@ class TestElements:
             email = web_table_page.add_new_person()[3]
             web_table_page.search_some_person(email)
             web_table_page.delete_person_info()
-            text = web_table_page.check_deleted_person()
-            assert text == "No rows found"
+            assert web_table_page.check_deleted_person(), "Table is not empty"
 
         @pytest.mark.xfail(reason="Not all row numbers available")
         def test_web_page_change_count_rows(self, driver):

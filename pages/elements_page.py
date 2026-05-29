@@ -2,6 +2,7 @@ import base64
 import os
 import random
 import tempfile
+import time
 import requests
 from requests.exceptions import InvalidSchema
 from selenium.common import TimeoutException
@@ -136,23 +137,25 @@ class WebTablePage(BasePage):
             self.element_is_visible(self.locators.DEPARTMENT_INPUT).send_keys(department)
             self.element_is_visible(self.locators.SUBMIT_BUTTON).click()
             count -= 1
-            return [first_name, last_name, str(age), email, str(salary), department]
+        return [first_name, last_name, str(age), email, str(salary), department]
 
     def check_new_added_person(self):
-        people_list = self.elements_are_present(self.locators.FULL_PEOPLE_LIST)
-        data = []
-        for person in people_list:
-            data.append(person.text.splitlines())
-        return data
+        rows = self.elements_are_present(self.locators.TABLE_ROWS)
+        last_row = rows[-1]
+        cells = last_row.find_elements(By.TAG_NAME, "td")
+        return [cell.text for cell in cells[:6]]
 
     def search_some_person(self, key_word):
-        self.element_is_visible(self.locators.SEARCH_INPUT).send_keys(Keys.HOME)
-        self.element_is_visible(self.locators.SEARCH_INPUT).send_keys(key_word)
+        search_input = self.element_is_visible(self.locators.SEARCH_INPUT)
+        search_input.click()
+        search_input.clear()
+        search_input.send_keys(key_word)
 
     def check_search_person(self):
         delete_button = self.element_is_visible(self.locators.DELETE_BUTTON)
-        row = delete_button.find_element("xpath", self.locators.ROW_PARENT)
-        return row.text.splitlines()
+        row = delete_button.find_element(*self.locators.ROW_PARENT)
+        cells = row.find_elements(By.TAG_NAME, "td")
+        return [cell.text for cell in cells[:6]]
 
     def update_person_info(self):
         person_info = next(generated_person())
@@ -168,7 +171,8 @@ class WebTablePage(BasePage):
         self.element_is_visible(self.locators.DELETE_BUTTON).click()
 
     def check_deleted_person(self):
-        return self.element_is_present(self.locators.NO_ROWS_FOUND).text
+        rows = self.driver.find_elements(*self.locators.TABLE_ROWS)
+        return len(rows) == 0
 
     def select_up_to_some_rows(self):
         rows_per_page_button = self.element_is_present(self.locators.COUNT_ROW_LIST)
