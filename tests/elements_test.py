@@ -21,12 +21,12 @@ class TestElements:
 
     class TestCheckBox:
         def test_check_box(self, driver):
-            check_box_page = CheckBoxPage(driver)
-            check_box_page.open_full_list()
-            check_box_page.click_random_checkbox()
-            input_checkbox = check_box_page.get_checked_checkboxes()
-            output_checkbox = check_box_page.get_output_result()
-            assert input_checkbox == output_checkbox, 'checkboxes have not been selected'
+            page = CheckBoxPage(driver)
+            page.expand_random_folders()
+            page.click_random_visible_checkboxes()
+            nodes = page.get_all_tree_nodes()
+            page.assert_parent_aria_states(nodes)
+            page.assert_result_matches_checked_nodes(nodes)
 
     class TestRadioButton:
 
