@@ -9,6 +9,7 @@ from selenium.common import TimeoutException
 from pages.base_page import BasePage
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from data.checkbox_tree import CHECKBOX_TREE, EXPANDABLE_FOLDERS
 from generator.generator import generated_person, generate_txt_file
 from URLs.urls import ElementsPagesUrls
 from locators.elements_page_locators import TextBoxPageLocators, CheckBoxPageLocators, RadioButtonPageLocators, \
@@ -53,38 +54,163 @@ class CheckBoxPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver, url=ElementsPagesUrls.check_box_page_url)
         self.open()
+        try:
+            self.remove_ad_banner()
+            self.remove_footer()
+        except Exception:
+            pass
 
     locators = CheckBoxPageLocators()
 
-    def open_full_list(self):
-        self.element_is_visible(self.locators.EXPAND_ALL_BUTTON).click()
+    @staticmethod
+    def normalize_name(title: str) -> str:
+        return title.replace(' ', '').replace('.doc', '').lower()
 
-    def click_random_checkbox(self):
-        item_list = self.elements_are_visible(self.locators.ITEM_LIST)
-        count = 21
-        while count != 0:
-            item = item_list[random.randint(1, 15)]
-            if count > 0:
-                self.go_to_element(item)
-                item.click()
-                count -= 1
+    def get_all_tree_nodes(self):
+        nodes = []
+        for treenode in self.elements_are_present(self.locators.TREE_NODES):
+            titles = treenode.find_elements(*self.locators.TREE_TITLE)
+            if not titles:
+                continue
+            title = titles[0].text
+            checkbox = treenode.find_element(*self.locators.TREE_CHECKBOX)
+            aria_checked = checkbox.get_attribute('aria-checked')
+            classes = treenode.get_attribute('class') or ''
+            is_visible = treenode.is_displayed()
+            if 'rc-tree-treenode-switcher_open' in classes:
+                is_expanded = True
+            elif 'rc-tree-treenode-switcher_close' in classes:
+                is_expanded = False
             else:
+                is_expanded = None
+            nodes.append({
+                'title': title,
+                'aria_checked': aria_checked,
+                'is_expanded': is_expanded,
+                'is_visible': is_visible,
+            })
+        return nodes
+
+    def _folder_exists_in_dom(self, title):
+        locator = (
+            self.locators.TREE_NODE_BY_TITLE[0],
+            self.locators.TREE_NODE_BY_TITLE[1].format(title=title),
+        )
+        return bool(self.driver.find_elements(*locator))
+
+    def _get_node_by_title(self, title):
+        locator = (
+            self.locators.TREE_NODE_BY_TITLE[0],
+            self.locators.TREE_NODE_BY_TITLE[1].format(title=title),
+        )
+        return self.element_is_present(locator)
+
+    def _expand_folder_if_closed(self, folder):
+        if not self._folder_exists_in_dom(folder):
+            return
+        treenode = self._get_node_by_title(folder)
+        classes = treenode.get_attribute('class') or ''
+        if 'rc-tree-treenode-switcher-close' in classes:
+            switcher = treenode.find_element(*self.locators.CLOSED_SWITCHER)
+            self.go_to_element(switcher)
+            switcher.click()
+            time.sleep(0.2)
+
+
+    def expand_random_folders(self, count=None):
+        if count is None:
+            count = random.randint(0, 6)
+        if count == 0:
+            return
+        to_expand = random.sample(EXPANDABLE_FOLDERS, min(count, len(EXPANDABLE_FOLDERS)))
+        to_expand.sort(key=lambda name: EXPANDABLE_FOLDERS.index(name))
+        for folder in to_expand:
+            for node in self._get_ancestors_to_expand(folder):
+                self._expand_folder_if_closed(node)
+
+    def _get_ancestors_to_expand(self, folder):
+        ancestors = []
+        for parent, children in CHECKBOX_TREE.items():
+            if folder in children:
+                ancestors = self._get_ancestors_to_expand(parent) + [parent]
                 break
+        return ancestors + [folder]
 
-    def get_checked_checkboxes(self):
-        checked_list = self.elements_are_present(self.locators.CHECKED_ITEMS)
-        data = []
-        for box in checked_list:
-            title_item = box.find_element("xpath", self.locators.TITLE_ITEM)
-            data.append(title_item.text)
-        return str(data).replace(' ', '').replace('.doc', '').lower()
+    def get_visible_checkboxes(self):
+        checkboxes = []
+        for treenode in self.elements_are_present(self.locators.TREE_NODES):
+            if treenode.is_displayed():
+                checkboxes.append(treenode.find_element(*self.locators.TREE_CHECKBOX))
+        return checkboxes
 
-    def get_output_result(self):
-        result_list = self.elements_are_present(self.locators.OUTPUT_RESULTS)
-        data = []
-        for item in result_list:
-            data.append(item.text)
-        return str(data).replace(' ', '').lower()
+    def click_random_visible_checkboxes(self, count=None):
+        visible_titles = [
+            node['title'] for node in self.get_all_tree_nodes() if node['is_visible']
+        ]
+        if not visible_titles:
+            return
+        if count is None:
+            count = random.randint(0, len(visible_titles))
+        if count == 0:
+            return
+        for title in random.sample(visible_titles, count):
+            treenode = self._get_node_by_title(title)
+            checkbox = treenode.find_element(*self.locators.TREE_CHECKBOX)
+            self.go_to_element(checkbox)
+            checkbox.click()
+            time.sleep(0.3)
+
+    def get_result_text(self):
+        result_items = self.driver.find_elements(*self.locators.RESULT_ITEMS)
+        return [self.normalize_name(item.text) for item in result_items]
+
+    def assert_parent_aria_states(self, nodes):
+        nodes_by_title = {node['title']: node for node in nodes}
+        for parent, children in CHECKBOX_TREE.items():
+            if parent not in nodes_by_title:
+                continue
+            if not all(child in nodes_by_title for child in children):
+                continue
+            parent_node = nodes_by_title[parent]
+            child_states = {nodes_by_title[child]['aria_checked'] for child in children}
+            if child_states == {'false'}:
+                expected = 'false'
+            elif child_states == {'true'}:
+                expected = 'true'
+            else:
+                expected = 'mixed'
+            actual = parent_node['aria_checked']
+            assert actual == expected, (
+                f"Folder '{parent}': expected aria-checked='{expected}', got '{actual}'"
+            )
+
+    def _is_fully_checked(self, title, nodes_by_title):
+        if title in nodes_by_title:
+            return nodes_by_title[title]['aria_checked'] == 'true'
+        for parent, children in CHECKBOX_TREE.items():
+            if title in children:
+                return self._is_fully_checked(parent, nodes_by_title)
+        return False
+
+    def _build_expected_result(self, nodes):
+        nodes_by_title = {node['title']: node for node in nodes}
+        expected = []
+
+        def walk(title):
+            if self._is_fully_checked(title, nodes_by_title):
+                expected.append(self.normalize_name(title))
+            for child in CHECKBOX_TREE.get(title, []):
+                walk(child)
+
+        walk('Home')
+        return expected
+
+    def assert_result_matches_checked_nodes(self, nodes):
+        expected = self._build_expected_result(nodes)
+        actual = self.get_result_text()
+        assert sorted(actual) == sorted(expected), (
+            f"Result mismatch: expected {expected}, got {actual}"
+        )
 
 
 class RadioButtonPage(BasePage):

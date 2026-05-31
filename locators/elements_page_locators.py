@@ -19,11 +19,16 @@ class TextBoxPageLocators:
 
 
 class CheckBoxPageLocators:
-    EXPAND_ALL_BUTTON = (By.CSS_SELECTOR, 'button[title="Expand all"]')
-    ITEM_LIST = (By.CSS_SELECTOR, "span[class='rct-title']")
-    CHECKED_ITEMS = (By.CSS_SELECTOR, "svg[class='rct-icon rct-icon-check']")
-    TITLE_ITEM = ".//ancestor::span[@class='rct-text']"
-    OUTPUT_RESULTS = (By.CSS_SELECTOR, "span[class='text-success']")
+    TREE_NODES = (By.CSS_SELECTOR, ".rc-tree-treenode")
+    TREE_TITLE = (By.CSS_SELECTOR, ".rc-tree-title")
+    TREE_CHECKBOX = (By.CSS_SELECTOR, ".rc-tree-checkbox")
+    CLOSED_SWITCHER = (By.CSS_SELECTOR, ".rc-tree-switcher_close")
+    RESULT = (By.CSS_SELECTOR, "#result")
+    RESULT_ITEMS = (By.CSS_SELECTOR, "#result .text-success")
+    TREE_NODE_BY_TITLE = (
+        By.XPATH,
+        "//span[@class='rc-tree-title' and normalize-space()='{title}']/ancestor::div[contains(@class,'rc-tree-treenode')]",
+    )
 
 
 class RadioButtonPageLocators:
