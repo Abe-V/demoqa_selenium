@@ -77,9 +77,9 @@ class CheckBoxPage(BasePage):
             aria_checked = checkbox.get_attribute('aria-checked')
             classes = treenode.get_attribute('class') or ''
             is_visible = treenode.is_displayed()
-            if 'rc-tree-treenode-switcher-open' in classes:
+            if 'rc-tree-treenode-switcher_open' in classes:
                 is_expanded = True
-            elif 'rc-tree-treenode-switcher-close' in classes:
+            elif 'rc-tree-treenode-switcher_close' in classes:
                 is_expanded = False
             else:
                 is_expanded = None
@@ -116,16 +116,6 @@ class CheckBoxPage(BasePage):
             switcher.click()
             time.sleep(0.2)
 
-    def _get_closed_expandable_folders(self):
-        closed = []
-        for folder in EXPANDABLE_FOLDERS:
-            if not self._folder_exists_in_dom(folder):
-                continue
-            treenode = self._get_node_by_title(folder)
-            classes = treenode.get_attribute('class') or ''
-            if 'rc-tree-treenode-switcher-close' in classes:
-                closed.append(folder)
-        return closed
 
     def expand_random_folders(self, count=None):
         if count is None:
