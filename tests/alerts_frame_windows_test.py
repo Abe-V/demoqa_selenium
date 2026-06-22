@@ -1,4 +1,4 @@
-from pages.alerts_frame_wondows_page import BrowserWindowsPage
+from pages.alerts_frame_windows_page import BrowserWindowsPage
 
 
 class TestBrowserWindow:
@@ -18,5 +18,5 @@ class TestBrowserWindow:
 
     def test_new_window_message_button(self, driver):
         browser_window_page = BrowserWindowsPage(driver)
-        windows = browser_window_page.check_new_window_message_button()
-        assert len(windows) == 2, 'Alert window has not been opened'
+        window_count = browser_window_page.check_new_window_message_button()
+        assert window_count == 2, 'Alert window has not been opened'

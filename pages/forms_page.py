@@ -21,8 +21,7 @@ class PracticeFormPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver, url=url.practice_form_url)
         self.open()
-        self.remove_ad_banner()
-        self.remove_footer()
+        self.remove_overlays()
 
     locators = locators.forms_page_locators.PracticeFormPageLocators
 
@@ -215,31 +214,24 @@ class PracticeFormPage(BasePage):
     def select_state(self, state=None, flag=1):
         if not flag:
             return ''
-        # scroll all the way down
-        self.scroll_all_the_way_down()
         # click 'Select State' field
+        self.go_to_element(self.element_is_present(self.locators.SELECT_STATE))
         self.element_is_clickable(self.locators.SELECT_STATE).click()
-        num_of_elements = 0
-        list_of_states = []
-        # iterate over every state in a dropdown list and add it to list_of_states
-        while True:
-            try:
-                element = self.element_is_present((By.CSS_SELECTOR, f'div[id="react-select-3-option-{num_of_elements}"]'), 1)
-                list_of_states.append(element.text)
-                num_of_elements += 1
-            except TimeoutException:
-                break
-        # select random state and press 'ENTER'
+        state_options = self.elements_are_visible(
+            (By.XPATH, "//div[contains(@id, 'react-select-3-option-')]")
+        )
+        list_of_states = [option.text for option in state_options if option.text]
         if state is None:
             selected_state = random.choice(list_of_states)
-        else:
+        elif state in list_of_states:
             selected_state = state
-        # validate argument
-        try:
-            self.element_is_visible(self.locators.STATE_INPUT).send_keys(selected_state)
-        except TypeError:
-            print(f'Only next states available for choice: {list_of_states}')
-        self.element_is_visible(self.locators.STATE_INPUT).send_keys(Keys.RETURN)
+        else:
+            raise ValueError(f'Only next states available for choice: {list_of_states}')
+        for option in state_options:
+            if option.text == selected_state:
+                self.go_to_element(option)
+                option.click()
+                break
         return selected_state
 
     # select random State if not specified
@@ -247,30 +239,24 @@ class PracticeFormPage(BasePage):
         if not flag:
             return ''
         # click 'Select City' field
+        self.go_to_element(self.element_is_present(self.locators.SELECT_CITY))
         self.element_is_clickable(self.locators.SELECT_CITY).click()
-        self.scroll_all_the_way_down()
-        num_of_elements = 0
-        list_of_cities = []
-        # iterate over every city in a dropdown list and add it to list_of_cities
-        while True:
-            try:
-                element = self.element_is_present((By.CSS_SELECTOR, f'div[id="react-select-4-option-{num_of_elements}"]'), 1)
-                list_of_cities.append(element.text)
-                num_of_elements += 1
-            except TimeoutException:
-                # print(f'{num_of_elements} cities are presented')
-                break
-        # select random city
+     
+        city_options = self.elements_are_visible(
+            (By.XPATH, "//div[contains(@id, 'react-select-4-option-')]")
+        )
+        list_of_cities = [option.text for option in city_options if option.text]
         if city is None:
             selected_city = random.choice(list_of_cities)
-        # or specified city
         elif city in list_of_cities:
             selected_city = city
-        # if specified city is not in a list of cities - raise error
         else:
-            raise TypeError(f'Only next cities available for choice: {list_of_cities}')
-        self.element_is_visible(self.locators.CITY_INPUT).send_keys(selected_city)
-        self.element_is_visible(self.locators.CITY_INPUT).send_keys(Keys.RETURN)
+            raise ValueError(f'Only next cities available for choice: {list_of_cities}')
+        for option in city_options:
+            if option.text == selected_city:
+                self.go_to_element(option)
+                option.click()
+                break
         return selected_city
 
     def select_state_and_city(self, state=None, city=None, flag1=1, flag2=1):
@@ -300,7 +286,7 @@ class PracticeFormPage(BasePage):
         return [full_name, email, gender, mobile, date_of_birth, subjects, hobbies, picture, address, state_and_city]
 
     def click_submit(self):
-        self.scroll_all_the_way_down()
+        self.go_to_element(self.element_is_present(self.locators.SUBMIT_BUTTON))
         self.element_is_clickable(self.locators.SUBMIT_BUTTON).click()
 
     def check_the_form(self):
