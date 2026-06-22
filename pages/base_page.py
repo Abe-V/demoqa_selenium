@@ -31,7 +31,9 @@ class BasePage:
         return wait(self.driver, timeout).until(EC.element_to_be_clickable(locator))
 
     def go_to_element(self, element):
-        self.driver.execute_script("arguments[0].scrollIntoView();", element)
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block: 'center'});", element
+        )
 
     def scroll_to_element(self, element):
         self.driver.execute_script("window.scrollBy(0,200);", element)
@@ -83,6 +85,13 @@ class BasePage:
     def remove_footer(self):
         footer = self.find_element(PFP_Locators.FOOTER)
         self.driver.execute_script("arguments[0].remove()", footer)
+
+    def remove_overlays(self):
+        try:
+            self.remove_ad_banner()
+            self.remove_footer()
+        except Exception:
+            pass
 
     def get_current_url(self):
         return self.driver.current_url

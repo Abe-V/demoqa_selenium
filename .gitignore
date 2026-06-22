@@ -15,3 +15,14 @@ venv/
 
 # OS
 .DS_Store
+
+# Test artifacts
+output_image*.jpg
+*.log
+
+# Environment
+.env
+.env.*
+
+# Screenshots in project root
+/*.png

@@ -44,7 +44,7 @@ class TestElements:
                 assert output == selected, f"{selected} has not been selected"
             except TimeoutException:
                 if locator in locators_expected_to_fail:
-                    pytest.xfail('This button is unclickable yet')
+                    pytest.xfail(reason="DemoQA: 'No' radio button is disabled")
 
     class TestWebTable:
 
@@ -76,12 +76,16 @@ class TestElements:
             web_table_page.delete_person_info()
             assert web_table_page.check_deleted_person(), "Table is not empty"
 
-        @pytest.mark.xfail(reason="Not all row numbers available")
         def test_web_page_change_count_rows(self, driver):
             web_table_page = WebTablePage(driver)
-            count = web_table_page.select_up_to_some_rows()
-            assert count == [5, 10, 20, 25, 50, 100], \
-                'The number of rows in the table has not been changed or has changed incorrectly'
+            web_table_page.add_new_person(count=10)
+            visible_counts, options, total_rows = web_table_page.select_up_to_some_rows()
+            assert len(visible_counts) == len(options)
+            for visible_count, option_value in zip(visible_counts, options):
+                assert visible_count == min(option_value, total_rows), (
+                    f'Expected {min(option_value, total_rows)} visible rows for '
+                    f'rows-per-page={option_value}, got {visible_count}'
+                )
 
     class TestButtonsPage:
         def test_double_click_button(self, driver):
@@ -119,7 +123,7 @@ class TestElements:
                     f"This URL {link_href} is redirecting to {current_url} URL. Status code = {status_code}"
             except AssertionError as e:
                 if locator in self.expected_fail_locators:
-                    pytest.xfail(f"No valid href link is provided yet")
+                    pytest.xfail(reason="DemoQA: link href not provided or invalid")
                 else:
                     raise e
 

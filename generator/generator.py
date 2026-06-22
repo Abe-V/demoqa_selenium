@@ -50,8 +50,6 @@ def generate_jpeg_file():
     y1 = random.randint(y0+1, height)
     rectangle_coords = (x0, y0, x1, y1)
     draw.rectangle(rectangle_coords, fill=rectangle_color)
-    parent_directory = os.path.dirname(os.getcwd())
-    path = f'{parent_directory}/output_image{random.randint(0, 999)}.jpg'
-    # Save the image as a JPEG file
-    image.save(path, 'JPEG')
-    return path
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg', prefix='output_image') as file:
+        image.save(file.name, 'JPEG')
+        return file.name

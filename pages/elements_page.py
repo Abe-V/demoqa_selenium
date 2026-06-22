@@ -9,6 +9,7 @@ from selenium.common import TimeoutException
 from pages.base_page import BasePage
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
 from data.checkbox_tree import CHECKBOX_TREE, EXPANDABLE_FOLDERS
 from generator.generator import generated_person, generate_txt_file
 from URLs.urls import ElementsPagesUrls
@@ -24,6 +25,7 @@ class TextBoxPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver, url=ElementsPagesUrls.text_box_page_url)
         self.open()
+        self.remove_overlays()
 
     locators = TextBoxPageLocators()
 
@@ -54,11 +56,7 @@ class CheckBoxPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver, url=ElementsPagesUrls.check_box_page_url)
         self.open()
-        try:
-            self.remove_ad_banner()
-            self.remove_footer()
-        except Exception:
-            pass
+        self.remove_overlays()
 
     locators = CheckBoxPageLocators()
 
@@ -218,6 +216,7 @@ class RadioButtonPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver, url=ElementsPagesUrls.radio_button_page_url)
         self.open()
+        self.remove_overlays()
 
     locators = RadioButtonPageLocators()
 
@@ -235,12 +234,14 @@ class WebTablePage(BasePage):
     def __init__(self, driver):
         super().__init__(driver, url=ElementsPagesUrls.web_table_page_url)
         self.open()
+        self.remove_overlays()
 
     locators = WebTablePageLocators()
 
-    def add_new_person(self):
-        count = 1
-        while count != 0:
+    def add_new_person(self, count=None):
+        if count is None:
+            count = random.randint(1, 5)
+        for _ in range(count):
             person_info = next(generated_person())
             first_name = person_info.first_name
             last_name = person_info.last_name
@@ -262,7 +263,6 @@ class WebTablePage(BasePage):
             self.element_is_visible(self.locators.DEPARTMENT_INPUT).send_keys(Keys.HOME)
             self.element_is_visible(self.locators.DEPARTMENT_INPUT).send_keys(department)
             self.element_is_visible(self.locators.SUBMIT_BUTTON).click()
-            count -= 1
         return [first_name, last_name, str(age), email, str(salary), department]
 
     def check_new_added_person(self):
@@ -300,21 +300,28 @@ class WebTablePage(BasePage):
         rows = self.driver.find_elements(*self.locators.TABLE_ROWS)
         return len(rows) == 0
 
-    def select_up_to_some_rows(self):
-        rows_per_page_button = self.element_is_present(self.locators.COUNT_ROW_LIST)
-        count = [int(i) for i in rows_per_page_button.text.split() if i.isnumeric()]
-        data = []
-        for x in count:
-            count_row_button = self.element_is_present(self.locators.COUNT_ROW_LIST)
-            self.go_to_element(count_row_button)
-            count_row_button.click()
-            self.element_is_visible((By.CSS_SELECTOR, f"option[value='{x}']")).click()
-            data.append(self.check_count_rows())
-        return data
+    def get_rows_per_page_options(self):
+        select_element = self.element_is_present(self.locators.COUNT_ROW_LIST)
+        options = select_element.find_elements(By.TAG_NAME, 'option')
+        return [int(option.get_attribute('value')) for option in options if option.get_attribute('value').isdigit()]
+
+    def select_rows_per_page(self, rows_count):
+        select_element = self.element_is_present(self.locators.COUNT_ROW_LIST)
+        self.go_to_element(select_element)
+        Select(select_element).select_by_value(str(rows_count))
 
     def check_count_rows(self):
-        list_rows = self.elements_are_present(self.locators.FULL_PEOPLE_LIST)
-        return len(list_rows)
+        return len(self.driver.find_elements(*self.locators.TABLE_ROWS))
+
+    def select_up_to_some_rows(self):
+        options = self.get_rows_per_page_options()
+        self.select_rows_per_page(max(options))
+        total_rows = self.check_count_rows()
+        visible_counts = []
+        for option_value in options:
+            self.select_rows_per_page(option_value)
+            visible_counts.append(self.check_count_rows())
+        return visible_counts, options, total_rows
 
 
 class ButtonsPage(BasePage):
@@ -322,6 +329,7 @@ class ButtonsPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver, url=ElementsPagesUrls.buttons_page_url)
         self.open()
+        self.remove_overlays()
 
     locators = ButtonsPageLocators()
 
@@ -347,6 +355,7 @@ class LinksPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver, url=ElementsPagesUrls.links_page_url)
         self.open()
+        self.remove_overlays()
 
     locators = LinksPageLocators()
 
@@ -369,6 +378,7 @@ class UploadAndDownloadPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver, url=ElementsPagesUrls.upload_and_download_url)
         self.open()
+        self.remove_overlays()
 
     locators = UploadAndDownloadPageLocators
 
@@ -408,6 +418,7 @@ class DynamicPropertiesPage(BasePage):
     def __init__(self, driver):
         super().__init__(driver, url=ElementsPagesUrls.dynamic_properties_url)
         self.open()
+        self.remove_overlays()
 
     locators = DynamicPropertiesPageLocators
 
